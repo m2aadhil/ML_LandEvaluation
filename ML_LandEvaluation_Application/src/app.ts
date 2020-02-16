@@ -6,9 +6,7 @@ import * as HomeController from "./controllers/home.controller";
 
 const app = express();
 const port = 3000;
-app.get('/', (req, res) => {
-    res.send('app works..!');
-});
+
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -24,6 +22,9 @@ require('custom-env').env('dev')
 app.set("port", process.env.PORT);
 
 //application routes
+app.get('/', (req, res) => {
+    res.send('app works..!');
+});
 app.get("/home", HomeController.getInit);
 
 
