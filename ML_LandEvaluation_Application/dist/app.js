@@ -26,13 +26,10 @@ app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
+//configs
+require('custom-env').env('dev');
+app.set("port", process.env.PORT);
 //application routes
 app.get("/home", HomeController.getInit);
-// start the Express server
-app.listen(port, err => {
-    if (err) {
-        return console.error(err);
-    }
-    return console.log(`server is listening on ${port}`);
-});
+exports.default = app;
 //# sourceMappingURL=app.js.map
