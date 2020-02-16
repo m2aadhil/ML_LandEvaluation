@@ -1,0 +1,19 @@
+.app-header{
+    background-color: blue;
+    color: white;
+    padding: 5px;
+    width: 100%;
+}
+
+.app-footer{
+    width: 100%;
+    background-color: blue;
+    color: white;
+    padding: 5px;
+    width: 100%;
+}
+
+.app-content{
+    background-color: grey;
+    height: 80vh;
+}
