@@ -15,10 +15,6 @@ const body_parser_1 = __importDefault(require("body-parser"));
 //controllers
 const HomeController = __importStar(require("./controllers/home.controller"));
 const app = express_1.default();
-const port = 3000;
-app.get('/', (req, res) => {
-    res.send('app works..!');
-});
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: true }));
 app.use(function (req, res, next) {
@@ -30,6 +26,12 @@ app.use(function (req, res, next) {
 require('custom-env').env('dev');
 app.set("port", process.env.PORT);
 //application routes
+app.get('/', (req, res) => {
+    res.send('app works..!');
+});
 app.get("/home", HomeController.getInit);
+app.get("/load", HomeController.load);
+//tenser.createModel(tenser.trainingData);
+//run();
 exports.default = app;
 //# sourceMappingURL=app.js.map

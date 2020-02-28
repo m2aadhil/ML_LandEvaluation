@@ -3,9 +3,10 @@ import bodyParser from 'body-parser';
 
 //controllers
 import * as HomeController from "./controllers/home.controller";
+import * as tenser from "./services/tenserflow.service";
+
 
 const app = express();
-const port = 3000;
 
 
 app.use(bodyParser.json());
@@ -26,6 +27,11 @@ app.get('/', (req, res) => {
     res.send('app works..!');
 });
 app.get("/home", HomeController.getInit);
+app.get("/load", HomeController.load);
 
+
+//tenser.createModel(tenser.trainingData);
+
+//run();
 
 export default app;
