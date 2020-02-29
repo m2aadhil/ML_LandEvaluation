@@ -6,13 +6,15 @@ import { AppComponent } from './app.component';
 import { CountryViewComponent } from './country-view/country-view.component';
 import { StateViewComponent } from './state-view/state-view.component';
 import { CityViewComponent } from './city-view/city-view.component';
+import { MachineLearningComponent } from './machine-learning/machine-learning.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CountryViewComponent,
     StateViewComponent,
-    CityViewComponent
+    CityViewComponent,
+    MachineLearningComponent
   ],
   imports: [
     BrowserModule,

@@ -3,6 +3,7 @@ require('@tensorflow/tfjs-node');
 const http = require('http');
 const socketio = require('socket.io');
 const tenserflow = require('./services/tenserflow.service');
+const mlService = require('./services/ml.service');
 
 
 const TIMEOUT_BETWEEN_EPOCHS_MS = 500;
@@ -41,8 +42,9 @@ function sleep(ms) {
 //     io.emit('trainingComplete', true);
 // }
 
+mlService.run();
 //const train = tenserflow.trainingData();
-tenserflow.createModel();
+//tenserflow.createModel();
 //tenserflow.createModelTest();
 //tenserflow.run();
 //yconsole.log(train);
