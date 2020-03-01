@@ -111,6 +111,7 @@ export class RNNModel {
         const inputShape = [8, 3];
 
         const rnnUnits = 32;
+
         this.model.add(tf.layers.simpleRNN({
             units: rnnUnits,
             inputShape

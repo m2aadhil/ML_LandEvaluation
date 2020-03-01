@@ -42,7 +42,7 @@ function sleep(ms) {
 //     io.emit('trainingComplete', true);
 // }
 
-mlService.run();
+//mlService.run();
 //const train = tenserflow.trainingData();
 //tenserflow.createModel();
 //tenserflow.createModelTest();

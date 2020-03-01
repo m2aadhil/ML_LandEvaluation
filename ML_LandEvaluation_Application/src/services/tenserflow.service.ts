@@ -1,7 +1,15 @@
 import * as tf from '@tensorflow/tfjs';
 
-const DATA_PATH = "file://C://Users/MusthaqAa/source/repos/ML_LandEvaluation/ML_LandEvaluation_Application/datasets/arizona_data.csv";
+const DATA_PATH = "file://C://Users/MusthaqAa/source/repos/ML_LandEvaluation/ML_LandEvaluation_Application/datasets/arizona.csv";
 
+const PopulationMax = 7171646;
+const RDPIMax = 39955;
+const EmploymentMax = 3859137;
+const PopulationMin = 6280362;
+const RDPIMin = 30844;
+const EmploymentMin = 3181571;
+const PriceMax = 247449.5833;
+const PriceMin = 140399.6667;
 
 const normalizeData = (value, min, max) => {
     // min = min ? min : 0;
@@ -10,14 +18,19 @@ const normalizeData = (value, min, max) => {
     return (value - min) / (max - min);
 }
 
+const deNormalizeData = (value, min, max) => {
+
+    return value * (max - min) + min;
+}
+
 const csvTransform = (val: any) => {
     const { xs, ys } = val
     const values = [
-        [normalizeData(xs.Population, 6000000, 7000000)],
-        [normalizeData(xs.RDPI, 30000, 40000)],
-        [normalizeData(xs.Employment, 3000000, 36000000)]
+        [normalizeData(xs.Population, PopulationMin, PopulationMax)],
+        [normalizeData(xs.RDPI, RDPIMin, RDPIMax)],
+        [normalizeData(xs.Employment, EmploymentMin, EmploymentMax)]
     ];
-    return { xs: values, ys: ys.Price };
+    return { xs: values, ys: normalizeData(ys.Price, PriceMin, PriceMax) };
 }
 
 var nFeatures;
@@ -27,10 +40,7 @@ export const trainingData = async () => {
     //data.forEach(x => console.log(x));
     nFeatures = (await data.columnNames()).length - 1;
 
-    const converted = await data.map((r: any) => {
-        const { xs, ys } = r;
-        return { xs: [[xs.Population], [xs.RDPI], [xs.Employment]], ys: ys.Price };
-    }).batch(10);
+    const converted = await data.map(csvTransform).batch(10);
     //const converted = await data.map(csvTransform).shuffle(5).batch(10);
     return converted;
     // return tf.data.csv(DATA_PATH, { columnConfigs: { Price: { isLabel: true } } }).map(csvTransform)
@@ -40,10 +50,10 @@ export const trainingData = async () => {
 export const createModel = async () => {
     const model = tf.sequential();
     const data = await trainingData();
-    const learningRate = 4e-3;
+    const learningRate = 4e-5;
     model.add(tf.layers.lstm({
         inputShape: [3, 1],
-        units: 10
+        units: 100
     }));
     //model.weights.forEach(x => console.log(x));
     model.add(tf.layers.dense({
@@ -55,14 +65,34 @@ export const createModel = async () => {
         loss: 'meanSquaredError'
     });
 
-    await model.fitDataset(data, { epochs: 5 });
+    await model.fitDataset(data, { epochs: 10 });
 
-    data.take(1).forEachAsync((i: any) => {
+    data.take(3).forEachAsync((i: any) => {
         const { xs, ys } = i;
-        (xs as tf.Tensor).print();
-        (ys as tf.Tensor).print();
-        (model.predict(xs) as tf.Tensor).print();
-    })
+        //(xs as tf.Tensor).print();
+        //(ys as tf.Tensor).print();
+        const a = (model.predict(xs) as tf.Tensor);
+        //deNormalizeData(array, PriceMin, PriceMax)
+        a.array().then((array: any) => {
+            console.log(deNormalizeData(array[0], PriceMin, PriceMax));
+            // array.forEach(x => {
+            //     console.log(deNormalizeData(x, PriceMin, PriceMax));
+            // })
+            //console.log(array); console.log('n')
+        });
+
+        //(model.predict(xs) as tf.Tensor).print();
+    });
+
+    // const a = (model.predict(tf.tensor([[[normalizeData(7171646, PopulationMin, PopulationMax)],
+    // [normalizeData(39955, RDPIMin, RDPIMax)],
+    // [normalizeData(3859137, EmploymentMin, EmploymentMax)]]])) as tf.Tensor);
+    // a.array().then((array: any) => {
+    //     array.forEach(x => {
+    //         console.log(deNormalizeData(x, PriceMin, PriceMax));
+    //     })
+    //     //console.log(array); console.log('n')
+    // }); a.array().then()
 
 }
 
@@ -89,7 +119,7 @@ export const createModelTest = async () => {
         })
     );
     model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
-    model.compile({ loss: "meanSquaredError", optimizer: tf.train.rmsprop(learningRate) });
+    model.compile({ loss: "meanSquaredError", optimizer: tf.train.adam() });
 
     model.fit(data, y, { epochs: 1000 }).then(() => {
         // Use the model to do inference on a data point the model hasnt 

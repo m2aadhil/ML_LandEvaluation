@@ -168,11 +168,12 @@ export class DataSets {
             tf.util.shuffle(this.data);
 
             // Convert to Tensor
-            const inputs = this.data.map(d => d[0])
-            const labels = this.target;
+            const inputs = this.data.slice(0, 10).map(x => x.map(y => [y]));
+            //console.log(inputs)
+            const labels = this.target.slice(0, 10).map(x => x);
 
-            const inputT = tf.tensor2d(inputs, [inputs.length, 1]);
-            const labelT = tf.tensor2d(labels, [labels.length, 1]);
+            const inputT = tf.tensor(inputs);
+            const labelT = tf.tensor(labels);
 
             //Normalize the data to the range 0 - 1
             const inputMax = inputT.max();

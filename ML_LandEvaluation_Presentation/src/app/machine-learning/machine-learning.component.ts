@@ -27,10 +27,12 @@ export class MachineLearningComponent implements OnInit {
 
         let model = new MachineLearningModel();
 
+        model.createLSTMModel();
         let tensors = this.dataSet.getTensors();
         const { inputs, labels } = tensors;
 
-        await model.trainModel(inputs, labels);
+        await model.trainLSTMModel(inputs, labels);
+        //await model.trainModel(inputs, labels);
         console.log('Done Training');
         //model.model.summary();
         await model.testModel(tensors);

@@ -30,7 +30,8 @@ app.get('/', (req, res) => {
     res.send('app works..!');
 });
 app.get("/home", HomeController.getInit);
-app.get("/load", HomeController.load);
+//app.get("/load", HomeController.load);
+app.get("/train/:location/:epochs", HomeController.train);
 //tenser.createModel(tenser.trainingData);
 //run();
 exports.default = app;

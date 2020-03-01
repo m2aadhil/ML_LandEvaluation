@@ -6,11 +6,31 @@ export class MachineLearningModel {
     public model;
 
     constructor() {
+
+    }
+
+    createDensModel() {
         this.model = tf.sequential();
         // hidden layer
         this.model.add(tf.layers.dense({ inputShape: [1], units: 1, useBias: true }));
         // output layer
         this.model.add(tf.layers.dense({ units: 1, useBias: true }));
+    }
+
+    createLSTMModel() {
+        this.model = tf.sequential();
+        // hidden layer
+        this.model.add(tf.layers.lstm({
+            inputShape: [3, 1],
+            units: 1
+        }));
+        //this.model.add(tf.layers.flatten());
+        // output layer
+        this.model.add(tf.layers.dense({
+            units: 1
+        }));
+
+        //this.model.add(tf.layers.dense({ units: 1, useBias: true }));
     }
 
     trainModel = async (inputs, labels) => {
@@ -20,6 +40,19 @@ export class MachineLearningModel {
             optimizer: tf.train.adam(),
             loss: tf.losses.meanSquaredError,
             metrics: ['mse'],
+        });
+        return await this.model.fit(inputs, labels, {
+            epochs: 20
+        });
+    }
+
+    trainLSTMModel = async (inputs, labels) => {
+
+        // Prepare the model for training.  
+        const learningRate = 4e-3;
+        this.model.compile({
+            optimizer: tf.train.rmsprop(learningRate),
+            loss: 'meanSquaredError'
         });
         return await this.model.fit(inputs, labels, {
             epochs: 20

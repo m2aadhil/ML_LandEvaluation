@@ -9,11 +9,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const ml_service_1 = require("../services/ml.service");
+const tenserflow = require('../services/tenserflow.service');
 exports.getInit = (req, res) => {
     res.json({ res: true });
 };
-exports.load = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    // let data = await run();
-    // await res.json(data);
+exports.train = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(req.params);
+    let location;
+    let mlService = new ml_service_1.MLService();
+    let price = yield mlService.executeTrainin(req.params.location, Number(req.params.epochs));
+    let values = yield mlService.getOrigianlPrices();
+    let step1 = yield mlService.predictStep();
+    let step2 = yield mlService.predictStep();
+    res.json({ values: values, 2018: price, 2019: step1, 2020: step2 });
 });
 //# sourceMappingURL=home.controller.js.map

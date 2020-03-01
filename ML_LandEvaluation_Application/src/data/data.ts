@@ -1,7 +1,7 @@
 import * as tf from '@tensorflow/tfjs';
 const fetch = require("node-fetch");
 const LOCAL_LAND_DATA_CSV_PATH = 'https://www43.zippyshare.com/d/zLZtLwWG/38360/arizona.csv';
-const DATA_PATH = "file://C://Users/MusthaqAa/source/repos/ML_LandEvaluation/ML_LandEvaluation_Application/datasets/arizona_data.csv";
+const DATA_PATH = "file://C://Users/MusthaqAa/source/repos/ML_LandEvaluation/ML_LandEvaluation_Application/datasets/arizona.csv";
 
 export class DataSets {
 
