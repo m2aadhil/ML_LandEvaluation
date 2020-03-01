@@ -1,4 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
+import { callbacks } from '@tensorflow/tfjs';
 
 export class LSTMModel {
 
@@ -29,7 +30,11 @@ export class LSTMModel {
     }
 
     trainModel = async (data, epochs) => {
-        await this.model.fitDataset(data, { epochs: epochs });
+        await this.model.fitDataset(data, {
+            epochs: epochs,
+            callbacks: { onEpochEnd: (epoch, logs) => { console.log(logs) } }
+        });
+
     }
 
     predictPrice = async (data) => {

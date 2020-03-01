@@ -32,7 +32,5 @@ app.get('/', (req, res) => {
 app.get("/home", HomeController.getInit);
 //app.get("/load", HomeController.load);
 app.get("/train/:location/:epochs", HomeController.train);
-//tenser.createModel(tenser.trainingData);
-//run();
 exports.default = app;
 //# sourceMappingURL=app.js.map

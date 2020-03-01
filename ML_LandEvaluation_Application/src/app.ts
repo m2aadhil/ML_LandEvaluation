@@ -3,7 +3,6 @@ import bodyParser from 'body-parser';
 
 //controllers
 import * as HomeController from "./controllers/home.controller";
-import * as tenser from "./services/tenserflow.service";
 
 
 const app = express();
@@ -30,9 +29,5 @@ app.get("/home", HomeController.getInit);
 //app.get("/load", HomeController.load);
 app.get("/train/:location/:epochs", HomeController.train);
 
-
-//tenser.createModel(tenser.trainingData);
-
-//run();
 
 export default app;

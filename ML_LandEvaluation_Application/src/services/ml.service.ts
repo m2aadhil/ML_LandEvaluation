@@ -1,6 +1,3 @@
-import { DataSets } from "../data/data";
-import { trainingData } from "./tenserflow.service";
-import * as tf from '@tensorflow/tfjs';
 import { TensorData } from "../data/tensors.data";
 import { LSTMModel } from "../models/LSTMModel";
 
