@@ -25,6 +25,9 @@
               "src/assets/datasets"
             ],
             "styles": [
+              {
+                "input": "node_modules/@progress/kendo-theme-default/dist/all.css"
+              },
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/assets/styles/styles.css",
               "node_modules/jvectormap-next/jquery-jvectormap.css"
@@ -96,6 +99,9 @@
               "src/assets"
             ],
             "styles": [
+              {
+                "input": "node_modules/@progress/kendo-theme-default/dist/all.css"
+              },
               "src/styles.css"
             ],
             "scripts": []

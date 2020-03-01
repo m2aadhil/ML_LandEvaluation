@@ -15,5 +15,5 @@ export const train = async (req: Request, res: Response) => {
     let values = await mlService.getOrigianlPrices();
     let step1 = await mlService.predictStep();
     let step2 = await mlService.predictStep();
-    res.json({ values: values, 2018: price, 2019: step1, 2020: step2 });
+    res.json({ values: values, valid: price, step1: step1, step2: step2 });
 }

@@ -22,6 +22,6 @@ exports.train = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let values = yield mlService.getOrigianlPrices();
     let step1 = yield mlService.predictStep();
     let step2 = yield mlService.predictStep();
-    res.json({ values: values, 2018: price, 2019: step1, 2020: step2 });
+    res.json({ values: values, valid: price, step1: step1, step2: step2 });
 });
 //# sourceMappingURL=home.controller.js.map

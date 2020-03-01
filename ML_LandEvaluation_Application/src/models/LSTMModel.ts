@@ -3,7 +3,8 @@ import * as tf from '@tensorflow/tfjs';
 export class LSTMModel {
 
     private model: tf.Sequential;
-    featureCount = 8;
+    features = 3;
+    columnLength: number;
     private populations = [];
     private rdpis = [];
     private employments = [];
@@ -60,13 +61,16 @@ export class LSTMModel {
 
     predictNextStep = async (tensor) => {
         let price = null;
-        //let popMean = (await this.calculateMeansNStddevs(populations)).mean;
-        // let popDev = (await this.calculateMeansNStddevs(populations));
-        // let rdpDev = (await this.calculateMeansNStddevs(rdpis));
-        // let empDev = (await this.calculateMeansNStddevs(employments));
-        let popDev = this.calcDiff(this.populations);
-        let rdpDev = this.calcDiff(this.rdpis);
-        let empDev = this.calcDiff(this.employments);;
+        this.columnLength = this.populations.length;
+        let popDevs = (await this.calculateMeansNStddevs(this.populations.slice(this.columnLength - (this.columnLength / 2))));
+        let rdpDevs = (await this.calculateMeansNStddevs(this.rdpis.slice(this.columnLength - (this.columnLength / 2))));
+        let empDevs = (await this.calculateMeansNStddevs(this.employments.slice(this.columnLength - (this.columnLength / 2))));
+        let popDev = this.calcNextStep(this.populations[this.columnLength - 1], popDevs.stdDev);
+        let rdpDev = this.calcNextStep(this.rdpis[this.columnLength - 1], rdpDevs.stdDev);
+        let empDev = this.calcNextStep(this.employments[this.columnLength - 1], empDevs.stdDev);
+        // let popDev = this.calcDiff(this.populations.slice(this.columnLength - (this.columnLength / 2)));
+        // let rdpDev = this.calcDiff(this.rdpis.slice(this.columnLength - (this.columnLength / 2)));
+        // let empDev = this.calcDiff(this.employments.slice(this.columnLength - (this.columnLength / 2)));
         this.populations.push(popDev); this.rdpis.push(rdpDev); this.employments.push(empDev);
 
         const values = [
@@ -103,9 +107,9 @@ export class LSTMModel {
         return values[values.length - 1] + (val / values.length)
     }
 
-    calcNextStep(value, std, step) {
-        let dev = std / this.featureCount;
-        return value + dev;
+    calcNextStep(value, std) {
+        let val = value + (std / this.features) * Math.sqrt(this.columnLength);
+        return val;
     }
 
     calculateMeansNStddevs = async (dataColumns) => {
