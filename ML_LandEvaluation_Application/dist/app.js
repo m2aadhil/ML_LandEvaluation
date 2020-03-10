@@ -31,6 +31,6 @@ app.get('/', (req, res) => {
 });
 app.get("/home", HomeController.getInit);
 //app.get("/load", HomeController.load);
-app.get("/train/:location/:epochs", HomeController.train);
+app.get("/train/:type/:location/:epochs", HomeController.train);
 exports.default = app;
 //# sourceMappingURL=app.js.map

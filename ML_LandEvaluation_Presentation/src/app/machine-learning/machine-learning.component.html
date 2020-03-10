@@ -2,11 +2,20 @@
     <h4>Land Evaluation System</h4>
 </div>
 <div class="row">
-    <div class="col-md-2">
-        <label class="form-data">State :</label>
+    <div class="col-md-1">
+        <label class="form-data">State/ County :</label>
+    </div>
+    <div class="col-md-1">
+        <kendo-switch [(ngModel)]="isState" [onLabel]="'State'" [offLabel]="'County'"></kendo-switch>
     </div>
     <div class="col-md-2">
-        <kendo-dropdownlist [data]="listStates" [(ngModel)]="state">
+        <label *ngIf="isState" class="form-data">State</label>
+        <label *ngIf="!isState" class="form-data">County</label>
+    </div>
+    <div class="col-md-2">
+        <kendo-dropdownlist *ngIf="isState" [data]="listStates" [(ngModel)]="location">
+        </kendo-dropdownlist>
+        <kendo-dropdownlist *ngIf="!isState" [data]="listCounty" [(ngModel)]="location">
         </kendo-dropdownlist>
     </div>
     <div class="col-md-2">

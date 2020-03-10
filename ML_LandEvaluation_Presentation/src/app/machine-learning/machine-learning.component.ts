@@ -13,10 +13,13 @@ export class MachineLearningComponent implements OnInit {
         "louisiana", "maine", "maryland", "massachusetts", "michigan", "minnesota", "mississippi", "missouri", "montana", "nebraska", "nevada", "newhamshire", "newjersey", "newmexico", "newyork",
         "northcarolina", "northdakota", "ohio", "oklahoma", "oregon", "pennsylvania", "rhodeisland", "southcarolina", "southdakota", "tennessee", "texas", "utah", "vermont", "virginia",
         "washington", "westvirginia", "wisconsin", "wyoming"];
-    state: string;
+    listCounty: string[] = ["alameda"]
+
+    location: string;
     epochs: number = 450;
 
     isLoading: boolean = false;
+    isState: boolean = true;
 
     truePrices: number[] = [];
     predictedPrices: number[] = [];
@@ -36,7 +39,8 @@ export class MachineLearningComponent implements OnInit {
         this.isLoading = true;
         this.truePrices = [];
         this.predictedPrices = [null, null, null, null, null, null, null, null, null, null];
-        this.httpService.get(this.host + 'train/' + this.state + '/' + this.epochs)
+        let type = this.isState ? 'state' : 'county';
+        this.httpService.get(this.host + 'train/' + type + '/' + this.location + '/' + this.epochs)
             .then((res: any) => {
                 if (res) {
                     this.truePrices = res.values;

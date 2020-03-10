@@ -1,5 +1,6 @@
 import * as tf from '@tensorflow/tfjs';
 import { callbacks } from '@tensorflow/tfjs';
+import { TensorData } from '../data/tensors.data';
 
 export class LSTMModel {
 
@@ -9,6 +10,11 @@ export class LSTMModel {
     private populations = [];
     private rdpis = [];
     private employments = [];
+
+    private crimeIncidents = [];
+    private perCapitaPersonalIncome = [];
+    private medianHouseholdIncome = [];
+
     constructor() {
         this.model = tf.sequential();
     }
@@ -34,7 +40,6 @@ export class LSTMModel {
             epochs: epochs,
             callbacks: { onEpochEnd: (epoch, logs) => { console.log(logs) } }
         });
-
     }
 
     predictPrice = async (data) => {
@@ -56,15 +61,62 @@ export class LSTMModel {
         return price;
     }
 
-    feedData(data) {
-        data[0].forEach(d => {
-            this.populations.push(d[0]);
-            this.rdpis.push(d[1]);
-            this.employments.push(d[2]);
-        })
+    feedData(data, type) {
+        switch (type) {
+            case ("state"): {
+                data[0].forEach(d => {
+                    this.populations.push(d[0]);
+                    this.rdpis.push(d[1]);
+                    this.employments.push(d[2]);
+                })
+            }; break;
+            case ("county"): {
+                data[0].forEach(d => {
+                    this.crimeIncidents.push(d[0]);
+                    this.populations.push(d[1]);
+                    this.perCapitaPersonalIncome.push(d[2]);
+                    this.medianHouseholdIncome.push(d[2]);
+                })
+            }; break;
+        }
     }
 
-    predictNextStep = async (tensor) => {
+
+    predictNextStepCounty = async (tensor: TensorData) => {
+        let price = null;
+        this.columnLength = this.populations.length;
+        let crimeDevs = (await this.calculateMeansNStddevs(this.crimeIncidents.slice(this.columnLength - (this.columnLength / 2))));
+        let popDevs = (await this.calculateMeansNStddevs(this.populations.slice(this.columnLength - (this.columnLength / 2))));
+        let perCapDevs = (await this.calculateMeansNStddevs(this.perCapitaPersonalIncome.slice(this.columnLength - (this.columnLength / 2))));
+        let medianDevs = (await this.calculateMeansNStddevs(this.medianHouseholdIncome.slice(this.columnLength - (this.columnLength / 2))));
+
+        let crimeDev = this.calcNextStep(this.crimeIncidents[this.columnLength - 1], crimeDevs.stdDev);
+        let popDev = this.calcNextStep(this.populations[this.columnLength - 1], popDevs.stdDev);
+        let perCapDev = this.calcNextStep(this.perCapitaPersonalIncome[this.columnLength - 1], perCapDevs.stdDev);
+        let medianDev = this.calcNextStep(this.medianHouseholdIncome[this.columnLength - 1], medianDevs.stdDev);
+
+        this.crimeIncidents.push(crimeDev); this.populations.push(popDev); this.perCapitaPersonalIncome.push(perCapDev); this.medianHouseholdIncome.push(medianDev);
+
+        const values = [
+            [tensor.normalizeValue(crimeDev, tensor.countyMinMax.CrimeIncidentsMin, tensor.countyMinMax.CrimeIncidentsMax)],
+            [tensor.normalizeValue(popDev, tensor.countyMinMax.PopulationMin, tensor.countyMinMax.PopulationMax)],
+            [tensor.normalizeValue(perCapDev, tensor.countyMinMax.PerCapitaPersonalIncomeMin, tensor.countyMinMax.PerCapitaPersonalIncomeMax)],
+            [tensor.normalizeValue(medianDev, tensor.countyMinMax.MedianHouseholdIncomeMin, tensor.countyMinMax.MedianHouseholdIncomeMax)]
+        ];
+
+        let tens = tf.tensor3d([values]);
+
+        const a = (await this.model.predict(tens) as tf.Tensor);
+        tens = null;
+        await a.array().then((array: any) => {
+            console.log('pred');
+            console.log(array);
+            price = array[0];
+        });
+        return price;
+    }
+
+    predictNextStepState = async (tensor: TensorData) => {
         let price = null;
         this.columnLength = this.populations.length;
         let popDevs = (await this.calculateMeansNStddevs(this.populations.slice(this.columnLength - (this.columnLength / 2))));
@@ -79,16 +131,12 @@ export class LSTMModel {
         this.populations.push(popDev); this.rdpis.push(rdpDev); this.employments.push(empDev);
 
         const values = [
-            [tensor.normalizeValue(popDev, tensor.PopulationMin, tensor.PopulationMax)],
-            [tensor.normalizeValue(rdpDev, tensor.RDPIMin, tensor.RDPIMax)],
-            [tensor.normalizeValue(empDev, tensor.EmploymentMin, tensor.EmploymentMax)]
+            [tensor.normalizeValue(popDev, tensor.stateMinMax.PopulationMin, tensor.stateMinMax.PopulationMax)],
+            [tensor.normalizeValue(rdpDev, tensor.stateMinMax.RDPIMin, tensor.stateMinMax.RDPIMax)],
+            [tensor.normalizeValue(empDev, tensor.stateMinMax.EmploymentMin, tensor.stateMinMax.EmploymentMax)]
         ];
 
         let tens = tf.tensor3d([values]);
-
-        // let tens = tf.tensor3d([[[this.calcNextStep(populations[9], popDev, step)],
-        // [this.calcNextStep(rdpis[9], rdpDev, step)],
-        // [this.calcNextStep(employments[9], empDev, step)]]]);
 
         const a = (await this.model.predict(tens) as tf.Tensor);
         tens = null;
