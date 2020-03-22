@@ -1,6 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
 import { StateMinMax } from './models/state.min-max.model';
-import { createDeflateRaw } from 'zlib';
 import { CountyMinMax } from './models/county.min-max.model';
 
 //const DATA_PATH = "file://C://Users/MusthaqAa/source/repos/ML_LandEvaluation/ML_LandEvaluation_Application/datasets/arizona_data.csv";
