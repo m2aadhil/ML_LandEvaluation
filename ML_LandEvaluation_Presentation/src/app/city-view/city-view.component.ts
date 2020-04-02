@@ -7,7 +7,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CityViewComponent implements OnInit {
 
-  constructor() { }
+  lat: any;
+  lng: any;
+
+  constructor() {
+    if (navigator) {
+      navigator.geolocation.getCurrentPosition(pos => {
+        this.lng = +pos.coords.longitude;
+        this.lat = +pos.coords.latitude;
+      });
+    }
+  }
 
   ngOnInit() {
   }

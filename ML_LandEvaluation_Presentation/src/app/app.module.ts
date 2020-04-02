@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AgmCoreModule } from '@agm/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -16,6 +17,10 @@ import { FormsModule } from '@angular/forms';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { ChartsModule } from '@progress/kendo-angular-charts';
 import 'hammerjs';
+import { FooterComponent } from './footer/footer.component';
+import { HomeComponent } from './home/home.component';
+import { SharedComponent } from './shared/shared.component';
+import { ErrorPageComponent } from './error-page/error-page.component';
 
 
 
@@ -26,7 +31,11 @@ import 'hammerjs';
     CountryViewComponent,
     StateViewComponent,
     CityViewComponent,
-    MachineLearningComponent
+    MachineLearningComponent,
+    FooterComponent,
+    HomeComponent,
+    SharedComponent,
+    ErrorPageComponent
   ],
   imports: [
     BrowserModule,
@@ -37,7 +46,10 @@ import 'hammerjs';
     InputsModule,
     DropDownsModule,
     ButtonsModule,
-    ChartsModule
+    ChartsModule,
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyBQHA8dF5on7GG0gZwOhgcGrlWxiXvsXS4'
+    }),
   ],
   providers: [HttpService],
   bootstrap: [AppComponent]
