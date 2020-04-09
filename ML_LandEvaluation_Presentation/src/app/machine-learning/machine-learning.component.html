@@ -14,7 +14,8 @@
             <label *ngIf="!isState" class="form-data">County</label>
         </div>
         <div class="col-md-2">
-            <kendo-dropdownlist *ngIf="isState" [data]="listStates" [(ngModel)]="location">
+            <kendo-dropdownlist *ngIf="isState" [data]="listStates" [valuePrimitive]="true" textField="name"
+                valueField="code" [(ngModel)]="location">
             </kendo-dropdownlist>
             <kendo-dropdownlist *ngIf="!isState" [data]="listCounty" [(ngModel)]="location">
             </kendo-dropdownlist>

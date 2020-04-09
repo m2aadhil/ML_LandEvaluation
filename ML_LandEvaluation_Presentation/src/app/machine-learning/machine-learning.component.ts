@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { multi } from './data';
 import { HttpService } from '../services/https.service';
+import { StateCodeMap } from '../constants/state-map';
 
 @Component({
     selector: 'app-machine-learning',
@@ -9,10 +10,7 @@ import { HttpService } from '../services/https.service';
 export class MachineLearningComponent implements OnInit {
 
     private host: string = "http://localhost:3600/";
-    listStates: string[] = ["alabama", "alaska", "arizona", "arkansas", "califonia", "colorado", "connecticut", "delaware", "districtofcolumbia", "florida", "georgia", "hawaii", "idaho", "illinois", "indiana", "iowa", "kansas", "kentucky",
-        "louisiana", "maine", "maryland", "massachusetts", "michigan", "minnesota", "mississippi", "missouri", "montana", "nebraska", "nevada", "newhamshire", "newjersey", "newmexico", "newyork",
-        "northcarolina", "northdakota", "ohio", "oklahoma", "oregon", "pennsylvania", "rhodeisland", "southcarolina", "southdakota", "tennessee", "texas", "utah", "vermont", "virginia",
-        "washington", "westvirginia", "wisconsin", "wyoming"];
+    listStates = StateCodeMap.sort((x, y) => x.name > y.name ? 1 : -1);
     listCounty: string[] = ["alameda"]
 
     location: string;
