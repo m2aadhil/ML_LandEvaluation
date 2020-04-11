@@ -11,40 +11,77 @@ declare var jvm: any;
 export class CountryViewComponent implements OnInit, AfterViewInit {
 
   palette = ['#66C2A5', '#FC8D62', '#8DA0CB', '#E78AC3', '#A6D854'];
+  view: string = 'country';
+  private path = '/assets/packages/maps/counties';
+  map;
+  private code;
+
   constructor() { }
 
   ngOnInit() {
   }
 
   ngAfterViewInit() {
-    let map;
-    let path = '/assets/packages/maps/counties';//'/js/us-counties/jquery-jvectormap-data-'
+    //'/js/us-counties/jquery-jvectormap-data-'
     jQuery(
-      map = new jvm.MultiMap({
+      this.map = new jvm.MultiMap({
         container: jQuery('#vmap'),
         maxLevel: 1,
         main: {
           map: 'us_lcc',
+          backgroundColor: 'transparent',
           series: {
             regions: [{
               attribute: 'fill',
-              values: '#4E7387'
+              values: '#f6f6f6'
             }]
-          }
-        },
-
-        mapUrlByCode: function (code, multiMap) {
-          return path + '/jquery-jvectormap-data-' +
-            code.toLowerCase() + '-' +
-            multiMap.defaultProjection + '-en.js';
+          },
+          onRegionClick: this.onRegionSelected,
         }
       })
 
     );
-    console.log(map.maps.us_lcc)
-    map.maps.us_lcc.series.regions[0].setValues(this.generateColors(map.maps.us_lcc));
+    this.map.maps.us_lcc.series.regions[0].setValues(this.generateColors(this.map.maps.us_lcc));
     // jQuery('#vmap').vectorMap({ map: 'usa_en' });
 
+  }
+
+  loadCountyMap = (code, multiMap) => {
+    return this.path + '/jquery-jvectormap-data-' +
+      code.toLowerCase() + '-' +
+      multiMap.defaultProjection + '-en.js';
+  }
+
+  onRegionSelected = (e, code, isSelected, selectedRegions) => {
+    /* Here We are getting Map Object */
+
+    //console.log(this.map.maps[code.toLowerCase() + '_lcc_en']);
+    setTimeout(function () {
+      this.view = 'county';
+      jQuery(
+        this.map = new jvm.MultiMap({
+          container: jQuery('#vmap2'),
+          maxLevel: 1,
+          main: {
+            map: code.toLowerCase() + '_lcc_en',
+            backgroundColor: 'transparent',
+            series: {
+              regions: [{
+                attribute: 'fill',
+                values: '#f6f6f6'
+              }]
+            },
+            onRegionClick: this.onRegionSelected,
+          }
+        })
+
+      );
+    }, 3000);
+
+  }
+
+  temp = (e, code) => {
+    console.log(code);
   }
 
   generateColors = (map) => {

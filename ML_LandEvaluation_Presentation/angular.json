@@ -40,7 +40,8 @@
               "src/assets/js/theme.js",
               "src/assets/js/land.min.js",
               "node_modules/jvectormap-next/jquery-jvectormap.js",
-              "src/assets/packages/maps/us_lcc.js"
+              "src/assets/packages/maps/us_lcc.js",
+              "src/assets/packages/maps/counties/jquery-jvectormap-data-us-az-lcc-en.js"
             ]
           },
           "configurations": {
