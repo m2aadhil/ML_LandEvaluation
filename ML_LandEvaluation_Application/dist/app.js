@@ -14,6 +14,7 @@ const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
 //controllers
 const HomeController = __importStar(require("./controllers/home.controller"));
+const DatabaseController = __importStar(require("./controllers/database.controller"));
 const app = express_1.default();
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: true }));
@@ -32,5 +33,7 @@ app.get('/', (req, res) => {
 app.get("/home", HomeController.getInit);
 //app.get("/load", HomeController.load);
 app.get("/train/:type/:location/:epochs", HomeController.train);
+app.get("/testdb", DatabaseController.testDBConnection);
+HomeController.trainStates();
 exports.default = app;
 //# sourceMappingURL=app.js.map

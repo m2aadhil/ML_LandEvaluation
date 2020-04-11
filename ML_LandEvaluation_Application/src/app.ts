@@ -3,7 +3,7 @@ import bodyParser from 'body-parser';
 
 //controllers
 import * as HomeController from "./controllers/home.controller";
-
+import * as DatabaseController from "./controllers/database.controller";
 
 const app = express();
 
@@ -28,6 +28,7 @@ app.get('/', (req, res) => {
 app.get("/home", HomeController.getInit);
 //app.get("/load", HomeController.load);
 app.get("/train/:type/:location/:epochs", HomeController.train);
+app.get("/testdb", DatabaseController.testDBConnection);
 
-
+HomeController.trainStates();
 export default app;

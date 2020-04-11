@@ -1,5 +1,7 @@
 import { TensorData } from "../data/tensors.data";
 import { LSTMModel } from "../models/LSTMModel";
+import { DBService } from "./database.service";
+import { StateCodeMap } from "./statemap";
 
 export class MLService {
 
@@ -49,6 +51,27 @@ export class MLService {
 
     getOrigianlPrices = async () => {
         return await this.tensors.getOrigianlPrices();
+    }
+
+    trainAllStates = async () => {
+        for (let i = 0; i < StateCodeMap.length; i++) {
+            await this.trainAndUpdate(StateCodeMap[i].code, 'state', 435);
+        }
+    }
+
+    trainAndUpdate = async (location: string, type: string, epochs: number) => {
+        let mlService: MLService = new MLService();
+        let dbService: DBService = new DBService();
+        try {
+            await mlService.executeTrainin(location, epochs, type);
+            let values: any[] = await mlService.getOrigianlPrices();
+            let step1 = await mlService.predictStep(type);
+            let step2 = await mlService.predictStep(type);
+            values.push(step1); values.push(step2);
+            await dbService.addStateValues(location, values)
+        } catch (err) {
+            console.error(err);
+        }
     }
 
 }

@@ -21,19 +21,24 @@
             "aot": false,
             "assets": [
               "src/favicon.ico",
-              "src/assets",
-              "src/assets/datasets"
+              "src/assets/",
+              "src/assets/packages/maps/counties/"
             ],
             "styles": [
               {
                 "input": "node_modules/@progress/kendo-theme-default/dist/all.css"
               },
-              "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "src/assets/styles/styles.css",
+              "src/assets/bootstrap/css/bootstrap.min.css",
+              "src/assets/css/styles.css",
+              "src/assets/css/land.css",
+              "src/assets/fonts/simple-line-icons.min.css",
               "node_modules/jvectormap-next/jquery-jvectormap.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",
+              "src/assets/bootstrap/js/bootstrap.min.js",
+              "src/assets/js/theme.js",
+              "src/assets/js/land.min.js",
               "node_modules/jvectormap-next/jquery-jvectormap.js",
               "src/assets/packages/maps/us_lcc.js"
             ]

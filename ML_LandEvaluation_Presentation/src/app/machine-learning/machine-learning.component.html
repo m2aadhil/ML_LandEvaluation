@@ -1,4 +1,3 @@
-<app-shared></app-shared>
 <div class="container-fluid" style="padding-top: 1%;">
     <!-- <div class="row">
         <h4>Land Evaluation System</h4>
@@ -15,7 +14,8 @@
             <label *ngIf="!isState" class="form-data">County</label>
         </div>
         <div class="col-md-2">
-            <kendo-dropdownlist *ngIf="isState" [data]="listStates" [(ngModel)]="location">
+            <kendo-dropdownlist *ngIf="isState" [data]="listStates" [valuePrimitive]="true" textField="name"
+                valueField="code" [(ngModel)]="location">
             </kendo-dropdownlist>
             <kendo-dropdownlist *ngIf="!isState" [data]="listCounty" [(ngModel)]="location">
             </kendo-dropdownlist>
@@ -54,4 +54,3 @@
         </div>
     </div>
 </div>
-<app-footer></app-footer>
