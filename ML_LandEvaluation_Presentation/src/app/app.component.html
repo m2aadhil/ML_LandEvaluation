@@ -1,1 +1,182 @@
-<router-outlet></router-outlet>
+<!-- <router-outlet></router-outlet> -->
+<nav class="navbar navbar-light navbar-expand-lg fixed-top bg-white clean-navbar">
+    <div class="container">
+        <nav class="navbar navbar-dark navbar-expand-lg fixed-top bg-dark clean-navbar">
+            <div class="container"><a class="navbar-brand logo" href="home">Land Evaluation</a><button
+                    data-toggle="collapse" data-target="#navcol-1" class="navbar-toggler"><span class="sr-only">Toggle
+                        navigation</span><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="navcol-1">
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item item" role="presentation"><a class="nav-link" [routerLink]="['/home']"
+                                [routerLinkActive]="['active']">HOME</a>
+                        </li>
+                        <li class="nav-item item" role="presentation"><a class="nav-link" [routerLink]="['/country']"
+                                [routerLinkActive]="['active']">COUNTRY</a>
+                        </li>
+                        <li class="nav-item item" role="presentation"><a class="nav-link" [routerLink]="['/city']"
+                                [routerLinkActive]="['active']">CITY</a></li>
+                        <li class="nav-item item" role="presentation"><a class="nav-link" [routerLink]="['/prediction']"
+                                [routerLinkActive]="['active']">TRAIN</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <a class="navbar-brand logo" href="#">Team Minecraft</a><button class="navbar-toggler"
+            data-toggle="collapse"><span class="sr-only">Toggle navigation</span><span
+                class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="navcol-1">
+            <ul class="nav navbar-nav ml-auto">
+                <li class="nav-item" role="presentation"><a class="nav-link" [routerLink]="['/home']"
+                        [routerLinkActive]="['active']">HOME</a></li>
+                <li class="nav-item" role="presentation"><a class="nav-link" [routerLink]="['/country']"
+                        [routerLinkActive]="['active']">COUNTRY</a></li>
+                <li class="nav-item" role="presentation"><a class="nav-link" [routerLink]="['/city']"
+                        [routerLinkActive]="['active']">CITY</a></li>
+                <li class="nav-item" role="presentation"><a class="nav-link" [routerLink]="['/prediction']"
+                        [routerLinkActive]="['active']">TRAIN</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<main class="page landing-page">
+    <section class="clean-block clean-info dark">
+        <div class="container">
+            <div class="block-heading"></div>
+            <router-outlet></router-outlet>
+            <!-- <div class="row align-items-center">
+                <div class="col-md-6"></div>
+                <div class="col-md-6">
+                    <h3>Lorem impsum dolor sit amet</h3>
+                    <div class="getting-started-info">
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Lorem ipsum dolor sit amet,
+                            consectetur adipisicing elit. Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+    </section>
+</main>
+
+<!-- Footer -->
+<footer class="page-footer font-small mdb-color pt-4"
+    style="background-color: rgb(248, 251, 252); font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; font-size: smaller;">
+
+    <!-- Footer Links -->
+    <div class="container text-center text-md-left">
+
+        <!-- Footer links -->
+        <div class="row text-center text-md-left mt-3 pb-3">
+
+            <!-- Grid column -->
+            <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mt-3">
+                <h6 class="text-uppercase mb-4 font-weight-bold">Mine-Craft</h6>
+                <p>Real estate cannot be lost or stolen, nor can it be carried away. Purchased with common sense, paid
+                    for in
+                    full, and managed with reasonable care, it is about the safest investment in the world.</p>
+            </div>
+            <!-- Grid column -->
+
+            <hr class="w-100 clearfix d-md-none">
+
+            <!-- Grid column -->
+            <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mt-3" style="line-height: 10px;">
+                <h6 class="text-uppercase mb-4 font-weight-bold">Products</h6>
+                <p>
+                    <a href="#!">Value Prediction</a>
+                </p>
+                <p>
+                    <a href="#!">Land Sale</a>
+                </p>
+                <p>
+                    <a href="#!">Real Estate Consultant</a>
+                </p>
+                <p>
+                    <a href="#!">Land Findings</a>
+                </p>
+            </div>
+            <!-- Grid column -->
+
+            <hr class="w-100 clearfix d-md-none">
+
+            <!-- Grid column -->
+            <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mt-3" style="line-height: 10px;">
+                <h6 class="text-uppercase mb-4 font-weight-bold">Useful links</h6>
+                <p>
+                    <a href="#!">Your Account</a>
+                </p>
+                <p>
+                    <a href="#!">Contact Us</a>
+                </p>
+                <p>
+                    <a href="#!">About</a>
+                </p>
+                <p>
+                    <a href="#!">Help</a>
+                </p>
+            </div>
+
+            <!-- Grid column -->
+            <hr class="w-100 clearfix d-md-none">
+
+            <!-- Grid column -->
+            <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3" style="line-height: 10px;">
+                <h6 class="text-uppercase mb-4 font-weight-bold">Contact</h6>
+                <p> Colombo 05, Sri Lanka</p>
+                <p>info@gmail.com</p>
+                <p>+ 01 234 567 88</p>
+                <p>+ 01 234 567 89</p>
+            </div>
+            <!-- Grid column -->
+
+        </div>
+        <!-- Footer links -->
+
+        <hr>
+
+        <!-- Grid row -->
+        <div class="row d-flex align-items-center">
+
+            <!-- Grid column -->
+            <div class="col-md-7 col-lg-8">
+
+                <!--Copyright-->
+                <p class="text-center text-md-left">© 2020 Copyright:
+                    <a href="https://mdbootstrap.com/education/bootstrap/">
+                        <strong> minecraft.com</strong>
+                    </a>
+                </p>
+
+            </div>
+            <!-- Grid column -->
+
+            <!-- Grid column -->
+            <div class="col-md-5 col-lg-4 ml-lg-0">
+
+                <!-- Social buttons -->
+                <div class="text-center text-md-right">
+                    <a class="navbar-brand" href="#">
+                        <img src="assets/fb.png" width="30" height="30" alt="">
+                    </a>
+                    <a class="navbar-brand" href="#">
+                        <img src="assets/twitter.png" width="30" height="30" alt="">
+                    </a>
+                    <a class="navbar-brand" href="#">
+                        <img src="assets/google.png" width="30" height="30" alt="">
+                    </a>
+                    <a class="navbar-brand" href="#">
+                        <img src="assets/link.png" width="30" height="30" alt="">
+                    </a>
+                </div>
+
+            </div>
+            <!-- Grid column -->
+
+        </div>
+        <!-- Grid row -->
+
+    </div>
+    <!-- Footer Links -->
+
+</footer>
+<!-- Footer -->

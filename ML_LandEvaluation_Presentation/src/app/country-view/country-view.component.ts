@@ -18,6 +18,7 @@ export class CountryViewComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     let map;
+    let path = '/assets/packages/maps/counties';//'/js/us-counties/jquery-jvectormap-data-'
     jQuery(
       map = new jvm.MultiMap({
         container: jQuery('#vmap'),
@@ -33,7 +34,7 @@ export class CountryViewComponent implements OnInit, AfterViewInit {
         },
 
         mapUrlByCode: function (code, multiMap) {
-          return '/js/us-counties/jquery-jvectormap-data-' +
+          return path + '/jquery-jvectormap-data-' +
             code.toLowerCase() + '-' +
             multiMap.defaultProjection + '-en.js';
         }
