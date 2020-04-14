@@ -1,5 +1,9 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
-import * as  convert from 'color-convert';
+import { Component, OnInit, AfterViewInit, Output, EventEmitter, Input, OnDestroy } from '@angular/core';
+import * as  convert from 'color-convert'; import { StateResponseDTO } from '../model/states.response.dto';
+import { DataMapService } from '../services/data.map.service';
+import { ViewModel } from '../model/view.model';
+import { StateCodeMap } from '../constants/state-map';
+;
 declare var jQuery: any;
 declare var jvm: any;
 
@@ -9,16 +13,28 @@ declare var jvm: any;
   styleUrls: ['./country-view.component.css']
 })
 export class CountryViewComponent implements OnInit, AfterViewInit {
-
+  public value: number;
+  @Input() data: StateResponseDTO[] = [];
+  @Output() public viewChange: EventEmitter<any> = new EventEmitter<any>();
+  item: StateResponseDTO;
   palette = ['#66C2A5', '#FC8D62', '#8DA0CB', '#E78AC3', '#A6D854'];
   view: string = 'country';
   private path = '/assets/packages/maps/counties';
   map;
   private code;
 
-  constructor() { }
+  constructor(private dataService: DataMapService) {
+    this.dataService.selectedYear.subscribe(year => {
+      this.sliderChange(year);
+    });
+    this.dataService.drillDrown.subscribe(drill => {
+      this.drillDown(drill);
+    });
+  }
 
   ngOnInit() {
+    this.item = this.data[0];
+    this.setColorRange();
   }
 
   ngAfterViewInit() {
@@ -26,18 +42,34 @@ export class CountryViewComponent implements OnInit, AfterViewInit {
     jQuery(
       this.map = new jvm.MultiMap({
         container: jQuery('#vmap'),
+        regionLabelStyle: {
+          initial: {
+            fill: '#B90E32'
+          },
+          hover: {
+            fill: 'black'
+          }
+        },
         maxLevel: 1,
+        regionsSelectable: true,
         main: {
           map: 'us_lcc',
           backgroundColor: 'transparent',
           series: {
             regions: [{
               attribute: 'fill',
-              values: '#f6f6f6'
+              values: '#f6f6f6',
+              render: function (code) {
+                var doNotShow = ['US-AL'];
+                if (doNotShow.indexOf(code) === -1) {
+                  return code.split('-')[1];
+                }
+              },
             }]
           },
           onRegionClick: this.onRegionSelected,
-        }
+          onRegionTipShow: this.onRegionTipShow
+        },
       })
 
     );
@@ -46,42 +78,87 @@ export class CountryViewComponent implements OnInit, AfterViewInit {
 
   }
 
+  sliderChange(e): void {
+    console.log(e);
+    this.item = this.data.find(x => x.Year == e.toString());
+    this.map.maps.us_lcc.series.regions[0].setValues(this.generateColors(this.map.maps.us_lcc));
+    let view: ViewModel = new ViewModel();
+    view.value = this.item[this.code];
+    this.dataService.viewModel.next(view);
+  }
+
   loadCountyMap = (code, multiMap) => {
     return this.path + '/jquery-jvectormap-data-' +
       code.toLowerCase() + '-' +
       multiMap.defaultProjection + '-en.js';
   }
 
+  drillDown(e): void {
+    if (e) {
+      let mapData = this.map.params.mapNameByCode('us_lcc', this.map);
+      this.map.drillDown('us_lcc', this.code);
+    }
+  }
+
   onRegionSelected = (e, code, isSelected, selectedRegions) => {
-    /* Here We are getting Map Object */
-
-    //console.log(this.map.maps[code.toLowerCase() + '_lcc_en']);
-    setTimeout(function () {
-      this.view = 'county';
-      jQuery(
-        this.map = new jvm.MultiMap({
-          container: jQuery('#vmap2'),
-          maxLevel: 1,
-          main: {
-            map: code.toLowerCase() + '_lcc_en',
-            backgroundColor: 'transparent',
-            series: {
-              regions: [{
-                attribute: 'fill',
-                values: '#f6f6f6'
-              }]
-            },
-            onRegionClick: this.onRegionSelected,
-          }
-        })
-
-      );
-    }, 3000);
+    let view: ViewModel = new ViewModel();
+    this.code = code.replace('-', '_');
+    view.location = StateCodeMap.find(i => i.code == this.code).name;
+    view.value = this.item[this.code];
+    this.dataService.viewModel.next(view);
+    if (this.code != 'US_AZ') {
+      e.stopImmediatePropagation();
+    }
 
   }
 
-  temp = (e, code) => {
-    console.log(code);
+  private onRegionTipShow = (e, el, code) => {
+    let index = code.replace("-", "_");
+    let value = this.item[index] ? (Number(this.item[index])).toFixed(2) : null;
+    el.html(el.html() + ' ($ ' + value + ')');
+  }
+
+  private valueRange: number[] = [];
+  setColorRange(): void {
+    let max: number = 0;
+    let min: number = 0;
+    this.valueRange = [];
+    this.data.forEach(item => {
+      for (let key of Object.keys(item)) {
+        let val = item[key];
+        if (key == 'Year' || isNaN(val)) {
+          continue;
+        }
+        if (val > max) {
+          max = val;
+        }
+        if (val < min || min == 0) {
+          min = val;
+        }
+      }
+    })
+    console.log(max)
+    console.log(min)
+    let range: number = (max - min) / 100;
+    let value: number = min;
+    for (let i = 0; i <= 100; i++) {
+      this.valueRange.push(value);
+      value += range;
+    }
+    console.log(range)
+    console.log(this.valueRange)
+  }
+
+  getIndexOfValue(value: number): number {
+    console.log(value);
+    for (let i = 0; i < this.valueRange.length; i++) {
+      if (this.valueRange[i] > value) {
+        console.log(this.valueRange[i]);
+        console.log(i);
+        return i;
+      }
+    }
+    return -1;
   }
 
   generateColors = (map) => {
@@ -89,9 +166,10 @@ export class CountryViewComponent implements OnInit, AfterViewInit {
       key;
 
     let i = 0;
-    let j = 1;
     for (key in map.regions) {
-      colors[key] = '#' + convert.rgb.hex(255, i += 4, 0);
+      let index = key.replace("-", "_");
+      i = 210 - (this.getIndexOfValue(this.item[index]) * 2);
+      colors[key] = i <= 210 ? '#' + convert.rgb.hex(255, i, 0) : '#FFFFFF';
     }
     console.log(colors);
     return colors;

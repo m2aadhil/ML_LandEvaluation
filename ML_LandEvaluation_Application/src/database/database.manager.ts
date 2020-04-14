@@ -68,7 +68,7 @@ export class DBManager {
 
     getAllDocuments = async (collection: string) => {
         try {
-            return await this.db.collection(collection).find();
+            return await this.db.collection(collection).find().toArray();
         } catch (err) {
             console.error(err);
         }
@@ -77,7 +77,7 @@ export class DBManager {
 
     getDocuments = async (collection: string, document: any) => {
         try {
-            return await this.db.collection(collection).find(document);
+            return await this.db.collection(collection).find(document).toArray();
         } catch (err) {
             console.error(err);
         }

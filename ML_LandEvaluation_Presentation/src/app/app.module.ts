@@ -20,6 +20,8 @@ import { FooterComponent } from './footer/footer.component';
 import { HomeComponent } from './home/home.component';
 import { SharedComponent } from './shared/shared.component';
 import { ErrorPageComponent } from './error-page/error-page.component';
+import { ViewWindowComponent } from './view-window/view-window.component';
+import { DataMapService } from './services/data.map.service';
 
 
 
@@ -34,7 +36,8 @@ import { ErrorPageComponent } from './error-page/error-page.component';
     FooterComponent,
     HomeComponent,
     SharedComponent,
-    ErrorPageComponent
+    ErrorPageComponent,
+    ViewWindowComponent
   ],
   imports: [
     BrowserModule,
@@ -47,10 +50,10 @@ import { ErrorPageComponent } from './error-page/error-page.component';
     ButtonsModule,
     ChartsModule,
     AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyBQHA8dF5on7GG0gZwOhgcGrlWxiXvsXS4'
+      apiKey: 'AIzaSyBHGoQ0VuaijrL6_ibz33L_Ie4BNNW00hQ'
     }),
   ],
-  providers: [HttpService],
+  providers: [HttpService, DataMapService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

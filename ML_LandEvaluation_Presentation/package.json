@@ -30,7 +30,7 @@
     "@progress/kendo-angular-l10n": "^2.0.0",
     "@progress/kendo-angular-popup": "^3.0.0",
     "@progress/kendo-drawing": "^1.1.2",
-    "@progress/kendo-theme-default": "latest",
+    "@progress/kendo-theme-default": "^4.17.0",
     "@types/googlemaps": "^3.39.3",
     "bootstrap": "^4.4.1",
     "color-convert": "^2.0.1",
