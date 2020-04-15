@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { multi } from './data';
 import { HttpService } from '../services/https.service';
 import { StateCodeMap } from '../constants/state-map';
+import { CountyCodeMapCA } from '../constants/county-map-ca';
 
 @Component({
     selector: 'app-machine-learning',
@@ -11,7 +12,7 @@ export class MachineLearningComponent implements OnInit {
 
     private host: string = "http://localhost:3600/";
     listStates = StateCodeMap.sort((x, y) => x.name > y.name ? 1 : -1);
-    listCounty: string[] = ["alameda"]
+    listCounty = CountyCodeMapCA.sort((x, y) => x.code > y.code ? 1 : -1);
 
     location: string;
     epochs: number = 450;
@@ -30,7 +31,7 @@ export class MachineLearningComponent implements OnInit {
         Object.assign(this, { multi });
     }
     ngOnInit() {
-
+        console.log(this.listCounty);
     }
 
     onTrainButtonClick(): void {

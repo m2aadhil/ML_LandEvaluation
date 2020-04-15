@@ -3,6 +3,7 @@ import * as  convert from 'color-convert'; import { StateResponseDTO } from '../
 import { DataMapService } from '../services/data.map.service';
 import { ViewModel } from '../model/view.model';
 import { StateCodeMap } from '../constants/state-map';
+import { Subscription } from 'rxjs';
 ;
 declare var jQuery: any;
 declare var jvm: any;
@@ -12,19 +13,17 @@ declare var jvm: any;
   templateUrl: './country-view.component.html',
   styleUrls: ['./country-view.component.css']
 })
-export class CountryViewComponent implements OnInit, AfterViewInit {
+export class CountryViewComponent implements OnInit, AfterViewInit, OnDestroy {
   public value: number;
   @Input() data: StateResponseDTO[] = [];
   @Output() public viewChange: EventEmitter<any> = new EventEmitter<any>();
   item: StateResponseDTO;
-  palette = ['#66C2A5', '#FC8D62', '#8DA0CB', '#E78AC3', '#A6D854'];
-  view: string = 'country';
-  private path = '/assets/packages/maps/counties';
   map;
   private code;
+  private yearSubscription: Subscription;
 
   constructor(private dataService: DataMapService) {
-    this.dataService.selectedYear.subscribe(year => {
+    this.yearSubscription = this.dataService.selectedYear.subscribe(year => {
       this.sliderChange(year);
     });
     this.dataService.drillDrown.subscribe(drill => {
@@ -35,6 +34,10 @@ export class CountryViewComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.item = this.data[0];
     this.setColorRange();
+  }
+
+  ngOnDestroy(): void {
+    this.yearSubscription.unsubscribe();
   }
 
   ngAfterViewInit() {
@@ -74,7 +77,6 @@ export class CountryViewComponent implements OnInit, AfterViewInit {
 
     );
     this.map.maps.us_lcc.series.regions[0].setValues(this.generateColors(this.map.maps.us_lcc));
-    // jQuery('#vmap').vectorMap({ map: 'usa_en' });
 
   }
 
@@ -85,12 +87,6 @@ export class CountryViewComponent implements OnInit, AfterViewInit {
     let view: ViewModel = new ViewModel();
     view.value = this.item[this.code];
     this.dataService.viewModel.next(view);
-  }
-
-  loadCountyMap = (code, multiMap) => {
-    return this.path + '/jquery-jvectormap-data-' +
-      code.toLowerCase() + '-' +
-      multiMap.defaultProjection + '-en.js';
   }
 
   drillDown(e): void {
@@ -106,7 +102,7 @@ export class CountryViewComponent implements OnInit, AfterViewInit {
     view.location = StateCodeMap.find(i => i.code == this.code).name;
     view.value = this.item[this.code];
     this.dataService.viewModel.next(view);
-    if (this.code != 'US_AZ') {
+    if (this.code != 'US_CA') {
       e.stopImmediatePropagation();
     }
 
@@ -153,8 +149,6 @@ export class CountryViewComponent implements OnInit, AfterViewInit {
     console.log(value);
     for (let i = 0; i < this.valueRange.length; i++) {
       if (this.valueRange[i] > value) {
-        console.log(this.valueRange[i]);
-        console.log(i);
         return i;
       }
     }

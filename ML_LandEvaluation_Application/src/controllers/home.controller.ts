@@ -19,9 +19,9 @@ export const train = async (req: Request, res: Response) => {
     res.json({ values: values, valid: price, step1: step1, step2: step2 });
 }
 
-export const trainStates = () => {
+export const trainAll = () => {
     let mlService: MLService = new MLService();
-    mlService.trainAllStates();
+    mlService.trainAll();
 }
 
 

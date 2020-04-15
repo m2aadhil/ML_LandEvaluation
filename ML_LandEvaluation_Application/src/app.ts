@@ -30,6 +30,8 @@ app.get("/home", HomeController.getInit);
 app.get("/train/:type/:location/:epochs", HomeController.train);
 app.get("/testdb", DatabaseController.testDBConnection);
 app.get("/getstatevalues", DatabaseController.getAllStateValues);
+app.get("/getcountyvalues/:state", DatabaseController.getAllCountyValues);
 
-//HomeController.trainStates();
+//HomeController.trainAll();
+
 export default app;

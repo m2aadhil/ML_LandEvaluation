@@ -35,6 +35,7 @@ app.get("/home", HomeController.getInit);
 app.get("/train/:type/:location/:epochs", HomeController.train);
 app.get("/testdb", DatabaseController.testDBConnection);
 app.get("/getstatevalues", DatabaseController.getAllStateValues);
-//HomeController.trainStates();
+app.get("/getcountyvalues/:state", DatabaseController.getAllCountyValues);
+//HomeController.trainAll();
 exports.default = app;
 //# sourceMappingURL=app.js.map

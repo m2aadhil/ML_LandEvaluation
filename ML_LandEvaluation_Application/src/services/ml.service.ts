@@ -2,6 +2,7 @@ import { TensorData } from "../data/tensors.data";
 import { LSTMModel } from "../models/LSTMModel";
 import { DBService } from "./database.service";
 import { StateCodeMap } from "./statemap";
+import { CountyCodeMapCA } from "./county-map-ca";
 
 export class MLService {
 
@@ -53,9 +54,12 @@ export class MLService {
         return await this.tensors.getOrigianlPrices();
     }
 
-    trainAllStates = async () => {
+    trainAll = async () => {
         for (let i = 0; i < StateCodeMap.length; i++) {
             await this.trainAndUpdate(StateCodeMap[i].code, 'state', 435);
+        }
+        for (let i = 0; i < CountyCodeMapCA.length; i++) {
+            await this.trainAndUpdate(CountyCodeMapCA[i].code, 'county', 435);
         }
     }
 
@@ -68,7 +72,11 @@ export class MLService {
             let step1 = await mlService.predictStep(type);
             let step2 = await mlService.predictStep(type);
             values.push(step1); values.push(step2);
-            await dbService.addStateValues(location, values)
+            if (type == 'state') {
+                await dbService.addStateValues(location, values);
+            } else {
+                await dbService.addCountyValues(location, values);
+            }
         } catch (err) {
             console.error(err);
         }

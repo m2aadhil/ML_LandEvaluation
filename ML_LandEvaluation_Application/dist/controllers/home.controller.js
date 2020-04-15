@@ -27,8 +27,8 @@ exports.train = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     yield dbService.addStateValues(req.params.location, values);
     res.json({ values: values, valid: price, step1: step1, step2: step2 });
 });
-exports.trainStates = () => {
+exports.trainAll = () => {
     let mlService = new ml_service_1.MLService();
-    mlService.trainAllStates();
+    mlService.trainAll();
 };
 //# sourceMappingURL=home.controller.js.map

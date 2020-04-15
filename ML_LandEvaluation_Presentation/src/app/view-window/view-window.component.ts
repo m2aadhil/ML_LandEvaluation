@@ -4,6 +4,7 @@ import { environment } from 'src/environments/environment';
 import { StateResponseDTO } from '../model/states.response.dto';
 import { DataMapService } from '../services/data.map.service';
 import { ViewModel } from '../model/view.model';
+import { CountyResponseDTO } from '../model/county.response.dto';
 
 @Component({
   selector: 'app-view-window',
@@ -17,6 +18,7 @@ export class ViewWindowComponent implements OnInit {
   statusMessage: string = "";
   view: string;
   stateData: StateResponseDTO[] = [];
+  countyData: CountyResponseDTO[] = [];
   viewModel: ViewModel = new ViewModel();
   constructor(private dataService: DataMapService) {
     this.dataService.viewModel.subscribe((e: ViewModel) => {
@@ -33,10 +35,6 @@ export class ViewWindowComponent implements OnInit {
     this.init();
   }
 
-  viewChange(e) {
-    console.log(e);
-    this.view = e;
-  }
 
   private init = async () => {
     this.isLoading = true;
@@ -55,12 +53,17 @@ export class ViewWindowComponent implements OnInit {
     this.dataService.selectedYear.next($event);
   }
 
-  navigate(): void {
-    if (this.viewModel.location == 'Arizona') {
+  viewChange(view: string): void {
+    this.view = view;
+  }
+
+  navigate = async () => {
+    if (this.viewModel.location == 'California') {
       //this.dataService.drillDrown.next(true);
-      this.view = 'state';
+      this.countyData = await this.dataService.getCountyData('California');
+      this.viewChange('state');
     } else {
-      this.statusMessage = "Sorry... Currently we have trained data only for Arizona..."
+      this.statusMessage = "Sorry... Currently we have trained data only for California..."
 
     }
     setTimeout(function () {

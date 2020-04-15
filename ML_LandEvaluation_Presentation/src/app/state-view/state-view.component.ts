@@ -1,5 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, AfterViewInit } from '@angular/core';
 import * as  convert from 'color-convert';
+import { CountyResponseDTO } from '../model/county.response.dto';
+import { DataMapService } from '../services/data.map.service';
+import { ViewModel } from '../model/view.model';
+import { CountyCodeMapCA } from '../constants/county-map-ca';
+import { Subscription } from 'rxjs';
 declare var jQuery: any;
 declare var jvm: any;
 
@@ -8,115 +13,134 @@ declare var jvm: any;
   templateUrl: './state-view.component.html',
   styleUrls: ['./state-view.component.css']
 })
-export class StateViewComponent implements OnInit {
+export class StateViewComponent implements OnInit, AfterViewInit, OnDestroy {
 
-
-  palette = ['#66C2A5', '#FC8D62', '#8DA0CB', '#E78AC3', '#A6D854'];
-  view: string = 'country';
-  private path = '/assets/packages/maps/counties';
+  @Input() data: CountyResponseDTO[] = [];
+  @Output() public viewChange: EventEmitter<any> = new EventEmitter<any>();
+  item: CountyResponseDTO;
   map;
   private code;
+  private yearSubscription: Subscription;
 
-  constructor() { }
+  constructor(private dataService: DataMapService) {
+    this.yearSubscription = this.dataService.selectedYear.subscribe(year => {
+      this.sliderChange(year);
+    });
+    this.dataService.drillDrown.subscribe(drill => {
+      this.drillDown(drill);
+    });
+  }
 
   ngOnInit() {
+    this.item = this.data[0];
+    this.setColorRange();
+  }
+
+  ngOnDestroy(): void {
+    this.yearSubscription.unsubscribe();
   }
 
   ngAfterViewInit() {
-    //'/js/us-counties/jquery-jvectormap-data-'
-    let map = new jvm.Map({
-      map: 'us-az_lcc_en',
+    this.map = new jvm.Map({
+      map: 'us-ca_lcc_en',
       backgroundColor: 'transperent',
       container: jQuery('#vmap2'),
+      regionLabelStyle: {
+        initial: {
+          fill: '#B90E32'
+        },
+        hover: {
+          fill: 'black'
+        }
+      },
       series: {
         regions: [{
-          attribute: 'fill'
+          attribute: 'fill',
+          values: '#f6f6f6',
+          render: function (code) {
+
+          },
         }]
-      }
+      },
+      onRegionClick: this.onRegionSelected,
+      onRegionTipShow: this.onRegionTipShow
     });
-    // let map = jQuery('#vmap2').vectorMap({
-    //   map: 'us_lcc',
-    //   backgroundColor: 'transperent',
-    //   series: {
-    //     regions: [{
-    //       attribute: 'fill',
-    //       values: '#A9A9A9'
-    //     }]
-    //   }
-    // });
-    map.series.regions[0].setValues(this.generateColors(map));
-    // jQuery('#vmap').vectorMap({ map: 'usa_en' });
+
+    this.map.series.regions[0].setValues(this.generateColors(this.map));
 
   }
 
-  loadCountyMap = (code, multiMap) => {
-    return this.path + '/jquery-jvectormap-data-' +
-      code.toLowerCase() + '-' +
-      multiMap.defaultProjection + '-en.js';
+  sliderChange(e): void {
+    console.log(e);
+    this.item = this.data.find(x => x.Year == e.toString());
+    this.map.series.regions[0].setValues(this.generateColors(this.map));
+    let view: ViewModel = new ViewModel();
+    view.value = this.item[this.code];
+    this.dataService.viewModel.next(view);
+  }
+
+  drillDown(e): void {
+    if (e) {
+      let mapData = this.map.params.mapNameByCode('us_ca_lcc_en', this.map);
+      this.map.drillDown('us_ca_lcc_en', this.code);
+    }
   }
 
   onRegionSelected = (e, code, isSelected, selectedRegions) => {
-    /* Here We are getting Map Object */
-    //this.switchMap(code);
-    // console.log(this.map.maps[code.toLowerCase() + '_lcc_en']);
-
-    setTimeout(function () {
-      //let map = jQuery('#vmap div').vectorMap('get', 'mapObject'); data("mapObject");
-      //let map = jQuery('#vmap .jvectormap-container', 0).data("mapObject");
-      let map;
-      jQuery(
-        map = new jvm.MultiMap({
-          container: jQuery('#vmap'),
-          maxLevel: 1,
-          main: {
-            map: 'us_lcc',
-            backgroundColor: 'transparent',
-            series: {
-              regions: [{
-                attribute: 'fill',
-                values: '#f6f6f6'
-              }]
-            },
-          },
-          mapUrlByCode: this.loadCountyMap
-        })
-
-      );
-
-      // let mString = code.toLowerCase() + '_lcc_en';
-      // let map = jQuery('#vmap').vectorMap({
-      //   map: mString,
-      //   series: {
-      //     regions: [{
-      //       attribute: 'fill',
-      //       values: '#A9A9A9'
-      //     }]
-      //   }
-      // });
-      // jQuery('#vmap').vectorMap({ map: 'us_lcc' }).remove();
-
-      //this.view = 'county';
-      //console.log(map.maps[mString].regions[0].setValues(this.generateColors(map.maps[mString])));
-      // jQuery('#vmap').vectorMap('get', 'mapObject').remove();
-      // jQuery('#vmap').vectorMap().reset();
-      //console.log(jQuery('#vmap div .jvectormap-container', 1).data("mapObject"));
-      // map.setBackgroundColor('transperent');
-      //console.log(this.map.maps[code.toLowerCase() + '_lcc_en'])
-
-      //vectorMap({ map: 'us_lcc' })
-    }.bind(this), 3000);
+    let view: ViewModel = new ViewModel();
+    this.code = code.replace('0', '');
+    view.location = CountyCodeMapCA.find(i => i.code == this.code).name;
+    view.value = this.item[this.code];
+    this.dataService.viewModel.next(view);
+    if (this.code != 'US_CA') {
+      e.stopImmediatePropagation();
+    }
 
   }
 
-  switchMap = (code) => {
-    jQuery.getScript(this.path + '/jquery-jvectormap-data-' +
-      code.toLowerCase() + '-lcc-en.js', function (data) {
-        jQuery('#vmap div').vectorMap({ map: code + '_lcc_en' });
-      });
+  private onRegionTipShow = (e, el, code) => {
+    let index = code.replace("0", "");
+    let value = this.item[index] ? (Number(this.item[index])).toFixed(2) : null;
+    el.html(el.html() + ' ($ ' + value + ')');
   }
 
-  temp = (e, code) => {
-    console.log(code);
+
+  private valueRange: number[] = [];
+  setColorRange(): void {
+    let max: number = 0;
+    let min: number = 0;
+    this.valueRange = [];
+    this.data.forEach(item => {
+      for (let key of Object.keys(item)) {
+        let val = item[key];
+        if (key == 'Year' || isNaN(val)) {
+          continue;
+        }
+        if (val > max) {
+          max = val;
+        }
+        if (val < min || min == 0) {
+          min = val;
+        }
+      }
+    })
+
+    let range: number = (max - min) / 100;
+    let value: number = min;
+    for (let i = 0; i <= 100; i++) {
+      this.valueRange.push(value);
+      value += range;
+    }
+    console.log(this.valueRange);
+  }
+
+  getIndexOfValue(value: number): number {
+    for (let i = 0; i < this.valueRange.length; i++) {
+      if (this.valueRange[i] > value) {
+        return i;
+      }
+    }
+    return -1;
   }
 
   generateColors = (map) => {
@@ -124,9 +148,10 @@ export class StateViewComponent implements OnInit {
       key;
 
     let i = 0;
-    let j = 1;
     for (key in map.regions) {
-      colors[key] = '#' + convert.rgb.hex(255, i += 4, 0);
+      let index = key.replace("0", "");
+      i = 210 - (this.getIndexOfValue(this.item[index]) * 2);
+      colors[key] = i <= 210 ? '#' + convert.rgb.hex(255, i, 0) : '#FFFFFF';
     }
     console.log(colors);
     return colors;
