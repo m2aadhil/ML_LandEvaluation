@@ -4,19 +4,42 @@
       <div class="col-sm" #map style="background-color:white; height: 450px;">
       </div>
     </div>
-    <div class="col-md-2">
-      <kendo-dropdownlist [data]="listCounty" (valueChange)="valueChange($event)" textField="name" valueField="code"
-        [(ngModel)]="county">
-      </kendo-dropdownlist>
-    </div>
-    <div class="col-md-2">
-      <kendo-dropdownlist [data]="listCities" (valueChange)="cityChange($event)" textField="CityName"
-        valueField="CityCode" [(ngModel)]="location">
-      </kendo-dropdownlist>
-    </div>
-    <div class="col-md-2">
-      <kendo-dropdownlist [data]="listYears" [(ngModel)]="selectedYear">
-      </kendo-dropdownlist>
+    <div class="col-md-6">
+      <form>
+        <div class="form-group">
+          <label for="address">Address</label>
+          <input type="text" class="form-control" name="address" id="address" placeholder="Enter Address"
+            [(ngModel)]="address" [disabled]="isLoadingCities">
+          <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
+        </div>
+        <div class="form-group">
+          <label for="city">City</label>
+          <select class="form-control" id="city" name="city" (change)="cityChange($event)" [(ngModel)]="location"
+            [disabled]="isLoadingCities">
+            <option *ngFor="let city of listCities" [value]="city.CityCode">{{city.CityName}}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="county">County</label>
+          <select class="form-control" id="county" name="county" (change)="countyChange($event)" [(ngModel)]="county">
+            <option *ngFor="let county of listCounty" [value]="county.code">{{county.name}}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="state">State</label>
+          <select class="form-control" id="state" name="state" [(ngModel)]="state">
+            <option *ngFor="let st of listStates" [value]="st">{{st}}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="year">Year</label>
+          <select class="form-control" id="year" name="year" [(ngModel)]="selectedYear">
+            <option *ngFor="let year of listYears" [value]="year">{{year}}</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary" (click)="onClickSubmit()">Submit</button>
+      </form>
     </div>
 
   </div>
