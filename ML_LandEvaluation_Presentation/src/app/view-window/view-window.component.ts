@@ -12,8 +12,9 @@ import { CountyResponseDTO } from '../model/county.response.dto';
   styleUrls: ['./view-window.component.css']
 })
 export class ViewWindowComponent implements OnInit {
-
-  public value: number;
+  header = 'USA';
+  description = 'Land Value Index';
+  public value: number = 2008;
   isLoading: boolean = false;
   statusMessage: string = "";
   view: string;
@@ -43,6 +44,18 @@ export class ViewWindowComponent implements OnInit {
     this.view = 'country';
     this.isLoading = false;
     this.statusMessage = "";
+    this.sliderAnimation();
+  }
+
+  sliderAnimation = () => {
+
+    if (this.value < 2019) {
+      setTimeout(() => {
+        this.value++;
+        this.sliderChange(this.value);
+        this.sliderAnimation();
+      }, 150);
+    }
   }
 
   title = value => {
@@ -55,6 +68,13 @@ export class ViewWindowComponent implements OnInit {
 
   viewChange(view: string): void {
     this.view = view;
+    if (this.view == 'country') {
+      this.header = 'USA';
+      this.description = 'Land Value Index';
+    } else {
+      this.header = 'Califonia';
+      this.description = 'Value per purch';
+    }
   }
 
   navigate = async () => {
@@ -66,6 +86,7 @@ export class ViewWindowComponent implements OnInit {
       this.statusMessage = "Sorry... Currently we have trained data only for California..."
 
     }
+    this.viewModel = new ViewModel();
     setTimeout(function () {
       this.statusMessage = "";
     }.bind(this), 4000);

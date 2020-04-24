@@ -31,11 +31,13 @@ app.get('/', (req, res) => {
     res.send('app works..!');
 });
 app.get("/home", HomeController.getInit);
-//app.get("/load", HomeController.load);
-app.get("/train/:type/:location/:epochs", HomeController.train);
+app.get("/train/:type/:location/:epochs/:learningr", HomeController.train);
 app.get("/testdb", DatabaseController.testDBConnection);
 app.get("/getstatevalues", DatabaseController.getAllStateValues);
 app.get("/getcountyvalues/:state", DatabaseController.getAllCountyValues);
+app.get("/getpriceforloc/:address/:lat/:lng/:year/:citycode", HomeController.getPriceforLocation);
+app.get("/getcities/:county", HomeController.getCities);
 //HomeController.trainAll();
+//DatabaseController.testCSV();
 exports.default = app;
 //# sourceMappingURL=app.js.map

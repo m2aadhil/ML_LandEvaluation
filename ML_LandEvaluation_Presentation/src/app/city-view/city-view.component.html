@@ -1,12 +1,27 @@
 <div class="container-fluid">
   <div class="row">
-
+    <div class="col-md-6">
       <div class="col-sm" #map style="background-color:white; height: 450px;">
-        <!-- <div #map style="width:100%;height:400px"></div> -->
       </div>
-      <div class="col-sm" style="background-color:white;">
-      </div>
+    </div>
+    <div class="col-md-2">
+      <kendo-dropdownlist [data]="listCounty" (valueChange)="valueChange($event)" textField="name" valueField="code"
+        [(ngModel)]="county">
+      </kendo-dropdownlist>
+    </div>
+    <div class="col-md-2">
+      <kendo-dropdownlist [data]="listCities" (valueChange)="cityChange($event)" textField="CityName"
+        valueField="CityCode" [(ngModel)]="location">
+      </kendo-dropdownlist>
+    </div>
+    <div class="col-md-2">
+      <kendo-dropdownlist [data]="listYears" [(ngModel)]="selectedYear">
+      </kendo-dropdownlist>
+    </div>
 
-
+  </div>
+  <div class="row">
+    <h4>Estimated Value for the Location : </h4>
+    <h5>$ {{estimatedValue}}</h5>
   </div>
 </div>

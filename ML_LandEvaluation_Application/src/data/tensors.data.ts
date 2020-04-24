@@ -1,10 +1,18 @@
 import * as tf from '@tensorflow/tfjs';
+
 import { StateMinMax } from './models/state.min-max.model';
 import { CountyMinMax } from './models/county.min-max.model';
 
 //const DATA_PATH = "file://C://Users/MusthaqAa/source/repos/ML_LandEvaluation/ML_LandEvaluation_Application/datasets/arizona_data.csv";
 const DATA_PATH = "file://C://Users/MusthaqAa/source/repos/ML_LandEvaluation/ML_LandEvaluation_Application/datasets/";
 
+
+/**
+ *
+ *
+ * @export
+ * @class TensorData
+ */
 export class TensorData {
 
     public featureCount: number;
@@ -20,6 +28,13 @@ export class TensorData {
         this.filePath = DATA_PATH + type + '/' + location + '.csv';
     }
 
+
+    /**
+     * Load CSV file from local path
+     * 
+     * @param {string} type (location type) 
+     * @memberof TensorData
+     */
     loadCSV = async (type: string) => {
         this.csvData = await tf.data.csv(this.filePath, { columnConfigs: { Price: { isLabel: true } } });
         await this.mapMaxData(type);
@@ -42,6 +57,12 @@ export class TensorData {
         this.validationData = await data.skip(10).batch(1);
     }
 
+    /**
+     * Save max and min values
+     * 
+     * @param {string} type (location type) 
+     * @memberof TensorData
+     */
     mapMaxData = async (type: string) => {
         switch (type) {
             case ("state"): {
@@ -105,14 +126,38 @@ export class TensorData {
 
     }
 
+    /**
+     * normailze a value between mix and max
+     * 
+     * @param {number} value (normalizing value) 
+     * @param {number} min (minimum value) 
+     * @param {number} max (maximum value) 
+     * @memberof TensorData
+     */
     normalizeValue = (value, min, max) => {
         return (value - min) / (max - min);
     }
 
+
+     /**
+     * de-normailze a normalized value into original
+     * 
+     * @param {number} value (normalized value) 
+     * @param {number} min (minimum value) 
+     * @param {number} max (maximum value) 
+     * @memberof TensorData
+     */
     deNormalizeValue = (value, min, max) => {
         return value * (max - min) + min;
     }
 
+
+    /**
+     * normalize state dataset
+     * 
+     * @param {any} value (dataset array) 
+     * @memberof TensorData
+     */
     csvTransformStates = (val: any) => {
         const { xs, ys } = val
         const values = [
@@ -123,6 +168,12 @@ export class TensorData {
         return { xs: values, ys: this.normalizeValue(ys.Price, this.stateMinMax.PriceMin, this.stateMinMax.PriceMax) };
     }
 
+    /**
+     * normalize county dataset
+     * 
+     * @param {any} value (dataset array) 
+     * @memberof TensorData
+     */
     csvTransformCounties = (val: any) => {
         const { xs, ys } = val
         const values = [

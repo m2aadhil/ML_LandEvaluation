@@ -22,9 +22,8 @@ import { SharedComponent } from './shared/shared.component';
 import { ErrorPageComponent } from './error-page/error-page.component';
 import { ViewWindowComponent } from './view-window/view-window.component';
 import { DataMapService } from './services/data.map.service';
-
-
-
+import { SocketIOService } from './services/socketio.service';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 @NgModule({
   declarations: [
@@ -44,16 +43,16 @@ import { DataMapService } from './services/data.map.service';
     HttpClientModule,
     AppRoutingModule,
     FormsModule,
-    BrowserAnimationsModule,
+    BrowserAnimationsModule, NgxChartsModule,
     InputsModule,
     DropDownsModule,
     ButtonsModule,
     ChartsModule,
     AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyBHGoQ0VuaijrL6_ibz33L_Ie4BNNW00hQ'
+      apiKey: 'AIzaSyDyR_6J7H-k-A_SF2sNQ0Brou2IZQYpeik'
     }),
   ],
-  providers: [HttpService, DataMapService],
+  providers: [HttpService, DataMapService, SocketIOService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

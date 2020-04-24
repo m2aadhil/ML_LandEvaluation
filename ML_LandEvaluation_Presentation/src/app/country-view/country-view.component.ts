@@ -33,7 +33,7 @@ export class CountryViewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     this.item = this.data[0];
-    this.setColorRange();
+    //this.setColorRange();
   }
 
   ngOnDestroy(): void {
@@ -42,6 +42,8 @@ export class CountryViewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     //'/js/us-counties/jquery-jvectormap-data-'
+    let minMax = this.getMinMax();
+    console.log(minMax);
     jQuery(
       this.map = new jvm.MultiMap({
         container: jQuery('#vmap'),
@@ -61,13 +63,13 @@ export class CountryViewComponent implements OnInit, AfterViewInit, OnDestroy {
           series: {
             regions: [{
               attribute: 'fill',
-              values: '#f6f6f6',
-              render: function (code) {
-                var doNotShow = ['US-AL'];
-                if (doNotShow.indexOf(code) === -1) {
-                  return code.split('-')[1];
-                }
-              },
+              values: this.getValues(this.item),
+              max: minMax.max,
+              min: minMax.min,
+              scale: ['#ffd505', '#ff0d05'],
+              legend: {
+                vertical: true
+              }
             }]
           },
           onRegionClick: this.onRegionSelected,
@@ -76,14 +78,14 @@ export class CountryViewComponent implements OnInit, AfterViewInit, OnDestroy {
       })
 
     );
-    this.map.maps.us_lcc.series.regions[0].setValues(this.generateColors(this.map.maps.us_lcc));
+    this.map.maps.us_lcc.series.regions[0].setValues(this.getValues(this.item));
 
   }
 
   sliderChange(e): void {
     console.log(e);
     this.item = this.data.find(x => x.Year == e.toString());
-    this.map.maps.us_lcc.series.regions[0].setValues(this.generateColors(this.map.maps.us_lcc));
+    this.map.maps.us_lcc.series.regions[0].setValues(this.getValues(this.item));
     let view: ViewModel = new ViewModel();
     view.value = this.item[this.code];
     this.dataService.viewModel.next(view);
@@ -102,9 +104,10 @@ export class CountryViewComponent implements OnInit, AfterViewInit, OnDestroy {
     view.location = StateCodeMap.find(i => i.code == this.code).name;
     view.value = this.item[this.code];
     this.dataService.viewModel.next(view);
-    if (this.code != 'US_CA') {
-      e.stopImmediatePropagation();
-    }
+    // if (this.code != 'US_CA') {
+
+    // }
+    e.stopImmediatePropagation();
 
   }
 
@@ -115,10 +118,10 @@ export class CountryViewComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private valueRange: number[] = [];
-  setColorRange(): void {
+
+  getMinMax() {
     let max: number = 0;
     let min: number = 0;
-    this.valueRange = [];
     this.data.forEach(item => {
       for (let key of Object.keys(item)) {
         let val = item[key];
@@ -133,39 +136,69 @@ export class CountryViewComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       }
     })
-    console.log(max)
-    console.log(min)
-    let range: number = (max - min) / 100;
-    let value: number = min;
-    for (let i = 0; i <= 100; i++) {
-      this.valueRange.push(value);
-      value += range;
-    }
-    console.log(range)
-    console.log(this.valueRange)
+    return { min: min, max: max };
   }
 
-  getIndexOfValue(value: number): number {
-    console.log(value);
-    for (let i = 0; i < this.valueRange.length; i++) {
-      if (this.valueRange[i] > value) {
-        return i;
-      }
+  // setColorRange(): void {
+  //   let max: number = 0;
+  //   let min: number = 0;
+  //   this.valueRange = [];
+  //   this.data.forEach(item => {
+  //     for (let key of Object.keys(item)) {
+  //       let val = item[key];
+  //       if (key == 'Year' || isNaN(val)) {
+  //         continue;
+  //       }
+  //       if (val > max) {
+  //         max = val;
+  //       }
+  //       if (val < min || min == 0) {
+  //         min = val;
+  //       }
+  //     }
+  //   })
+  //   console.log(max)
+  //   console.log(min)
+  //   let range: number = (max - min) / 100;
+  //   let value: number = min;
+  //   for (let i = 0; i <= 100; i++) {
+  //     this.valueRange.push(value);
+  //     value += range;
+  //   }
+  //   console.log(range)
+  //   console.log(this.valueRange)
+  // }
+
+  // getIndexOfValue(value: number): number {
+  //   console.log(value);
+  //   for (let i = 0; i < this.valueRange.length; i++) {
+  //     if (this.valueRange[i] > value) {
+  //       return i;
+  //     }
+  //   }
+  //   return -1;
+  // }
+
+  getValues = (data: StateResponseDTO) => {
+    let mapData = {};
+    for (let key of Object.keys(data)) {
+      mapData[key.replace("_", "-")] = data[key];
     }
-    return -1;
+    console.log(mapData)
+    return mapData;
   }
 
-  generateColors = (map) => {
-    var colors = {},
-      key;
+  // generateColors = (map) => {
+  //   var colors = {},
+  //     key;
 
-    let i = 0;
-    for (key in map.regions) {
-      let index = key.replace("-", "_");
-      i = 210 - (this.getIndexOfValue(this.item[index]) * 2);
-      colors[key] = i <= 210 ? '#' + convert.rgb.hex(255, i, 0) : '#FFFFFF';
-    }
-    console.log(colors);
-    return colors;
-  }
+  //   let i = 0;
+  //   for (key in map.regions) {
+  //     let index = key.replace("-", "_");
+  //     i = 210 - (this.getIndexOfValue(this.item[index]) * 2);
+  //     colors[key] = i <= 210 ? '#' + convert.rgb.hex(255, i, 0) : '#FFFFFF';
+  //   }
+  //   console.log(colors);
+  //   return colors;
+  // }
 }

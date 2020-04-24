@@ -1,6 +1,7 @@
 import * as tf from '@tensorflow/tfjs';
 import { callbacks } from '@tensorflow/tfjs';
 import { TensorData } from '../data/tensors.data';
+import { io } from '../server';
 
 export class LSTMModel {
 
@@ -19,29 +20,56 @@ export class LSTMModel {
         this.model = tf.sequential();
     }
 
+
+    /**
+     * Creates the LSTM model
+     * 
+     * @param {number} featureCount (factor count affecting lanf value)
+     * @param {number} learningRate (learning rate of the model)
+     * @memberof LSTMModel
+     */
     createModel = async (featureCount, learningRate) => {
+        //Input layer
         this.model.add(tf.layers.lstm({
             inputShape: [featureCount, 1],
-            units: 100
+            units: 10
         }));
-        //model.weights.forEach(x => console.log(x));
+
+        //Output layer
         this.model.add(tf.layers.dense({
             units: 1
         }));
-        //tf.train.rmsprop(learningRate)
+
         this.model.compile({
             optimizer: tf.train.rmsprop(learningRate),
             loss: 'meanSquaredError'
         });
     }
 
+
+    /**
+     * Train the created model
+     * 
+     * @param {any} data (training data set)
+     * @param {number} epochs (training iteration count)
+     *
+     * @memberof LSTMModel
+     */
     trainModel = async (data, epochs) => {
         await this.model.fitDataset(data, {
             epochs: epochs,
-            callbacks: { onEpochEnd: (epoch, logs) => { console.log(logs) } }
+            callbacks: { onEpochEnd: (epoch, logs) => { console.log(logs); io.emit('my broadcast', { server: logs }); } }
         });
     }
 
+
+    /**
+     * Predict Price
+     * 
+     * @param {any} data (last data row)
+     *
+     * @memberof LSTMModel
+     */
     predictPrice = async (data) => {
         let price;
         await data.take(3).forEachAsync(i => {
@@ -50,14 +78,8 @@ export class LSTMModel {
             a.array().then((array: any) => {
                 console.log();
                 price = array[0];
-                //console.log(deNormalizeData(array[0], PriceMin, PriceMax));
-                // array.forEach(x => {
-                //     console.log(deNormalizeData(x, PriceMin, PriceMax));
-                // })
-
             });
         })
-
         return price;
     }
 

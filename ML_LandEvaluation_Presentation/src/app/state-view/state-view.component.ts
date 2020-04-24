@@ -33,7 +33,7 @@ export class StateViewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     this.item = this.data[0];
-    this.setColorRange();
+    // this.setColorRange();
   }
 
   ngOnDestroy(): void {
@@ -41,6 +41,7 @@ export class StateViewComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
+    let minMax = this.getMinMax();
     this.map = new jvm.Map({
       map: 'us-ca_lcc_en',
       backgroundColor: 'transperent',
@@ -56,24 +57,27 @@ export class StateViewComponent implements OnInit, AfterViewInit, OnDestroy {
       series: {
         regions: [{
           attribute: 'fill',
-          values: '#f6f6f6',
-          render: function (code) {
-
-          },
+          values: this.getValues(this.item),
+          max: minMax.max,
+          min: minMax.min,
+          scale: ['#ffd505', '#ff0d05'],
+          legend: {
+            vertical: true
+          }
         }]
       },
       onRegionClick: this.onRegionSelected,
       onRegionTipShow: this.onRegionTipShow
     });
 
-    this.map.series.regions[0].setValues(this.generateColors(this.map));
+    this.map.series.regions[0].setValues(this.getValues(this.item));
 
   }
 
   sliderChange(e): void {
     console.log(e);
     this.item = this.data.find(x => x.Year == e.toString());
-    this.map.series.regions[0].setValues(this.generateColors(this.map));
+    this.map.series.regions[0].setValues(this.getValues(this.item));
     let view: ViewModel = new ViewModel();
     view.value = this.item[this.code];
     this.dataService.viewModel.next(view);
@@ -98,18 +102,26 @@ export class StateViewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   }
 
+  getValues = (data: CountyResponseDTO) => {
+    let mapData = {};
+    for (let key of Object.keys(data)) {
+      if (!isNaN(Number(key))) {
+        mapData['0' + key] = data[key];
+      }
+    }
+    console.log(mapData)
+    return mapData;
+  }
+
   private onRegionTipShow = (e, el, code) => {
     let index = code.replace("0", "");
     let value = this.item[index] ? (Number(this.item[index])).toFixed(2) : null;
     el.html(el.html() + ' ($ ' + value + ')');
   }
 
-
-  private valueRange: number[] = [];
-  setColorRange(): void {
+  getMinMax() {
     let max: number = 0;
     let min: number = 0;
-    this.valueRange = [];
     this.data.forEach(item => {
       for (let key of Object.keys(item)) {
         let val = item[key];
@@ -124,37 +136,60 @@ export class StateViewComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       }
     })
-
-    let range: number = (max - min) / 100;
-    let value: number = min;
-    for (let i = 0; i <= 100; i++) {
-      this.valueRange.push(value);
-      value += range;
-    }
-    console.log(this.valueRange);
+    return { min: min, max: max };
   }
 
-  getIndexOfValue(value: number): number {
-    for (let i = 0; i < this.valueRange.length; i++) {
-      if (this.valueRange[i] > value) {
-        return i;
-      }
-    }
-    return -1;
-  }
 
-  generateColors = (map) => {
-    var colors = {},
-      key;
+  // private valueRange: number[] = [];
+  // setColorRange(): void {
+  //   let max: number = 0;
+  //   let min: number = 0;
+  //   this.valueRange = [];
+  //   this.data.forEach(item => {
+  //     for (let key of Object.keys(item)) {
+  //       let val = item[key];
+  //       if (key == 'Year' || isNaN(val)) {
+  //         continue;
+  //       }
+  //       if (val > max) {
+  //         max = val;
+  //       }
+  //       if (val < min || min == 0) {
+  //         min = val;
+  //       }
+  //     }
+  //   })
 
-    let i = 0;
-    for (key in map.regions) {
-      let index = key.replace("0", "");
-      i = 210 - (this.getIndexOfValue(this.item[index]) * 2);
-      colors[key] = i <= 210 ? '#' + convert.rgb.hex(255, i, 0) : '#FFFFFF';
-    }
-    console.log(colors);
-    return colors;
-  }
+  //   let range: number = (max - min) / 100;
+  //   let value: number = min;
+  //   for (let i = 0; i <= 100; i++) {
+  //     this.valueRange.push(value);
+  //     value += range;
+  //   }
+  //   console.log(this.valueRange);
+  // }
+
+  // getIndexOfValue(value: number): number {
+  //   for (let i = 0; i < this.valueRange.length; i++) {
+  //     if (this.valueRange[i] > value) {
+  //       return i;
+  //     }
+  //   }
+  //   return -1;
+  // }
+
+  // generateColors = (map) => {
+  //   var colors = {},
+  //     key;
+
+  //   let i = 0;
+  //   for (key in map.regions) {
+  //     let index = key.replace("0", "");
+  //     i = 210 - (this.getIndexOfValue(this.item[index]) * 2);
+  //     colors[key] = i <= 210 ? '#' + convert.rgb.hex(255, i, 0) : '#FFFFFF';
+  //   }
+  //   console.log(colors);
+  //   return colors;
+  // }
 
 }

@@ -1,12 +1,20 @@
-<div class="row align-items-center">
-    <div class="col-md-12">
-        <div class="d-flex justify-content-center">
-            <h6>&nbsp;{{statusMessage}}&nbsp;</h6>
+<div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+        <div class="align-items-center">
+            <h2 style="text-align: center;">&nbsp;Land Value Heat Map of {{header}}&nbsp;</h2>
         </div>
     </div>
+    <div class="col-md-2"></div>
 </div>
 <div class="row align-items-center">
-    <div class="col-md-7">
+    <div class="col-md-1"></div>
+    <div class="col-md-1">
+        <kendo-slider [fixedTickWidth]="30" [title]="title" [tickPlacement]="'bottom'" [vertical]="true"
+            [showButtons]="false" [min]="2008" [max]="2021" [largeStep]="1" (valueChange)="sliderChange($event)"
+            [(ngModel)]="value"></kendo-slider>
+    </div>
+    <div class="col-md-10">
         <div *ngIf="isLoading" class="d-flex justify-content-center">
             <div class="spinner-grow text-dark" style="width: 5rem; height: 5rem;" role="status">
                 <span class="sr-only">Loading...</span>
@@ -18,38 +26,24 @@
             <app-state-view *ngIf="view == 'state'" [data]="countyData" (viewChange)="viewChange($event)">
             </app-state-view>
         </div>
-        <!-- <div id="chartdiv" style="width: 100%; height: 50vh"></div> -->
     </div>
-    <div class="col-md-1">
-        <kendo-slider [fixedTickWidth]="30" [title]="title" [tickPlacement]="'bottom'" [vertical]="true"
-            [showButtons]="false" [min]="2008" [max]="2020" [largeStep]="1" (valueChange)="sliderChange($event)"
-            [(ngModel)]="value"></kendo-slider>
-    </div>
-    <div class="col-md-4">
-        <div *ngIf="isLoading" class="d-flex justify-content-center">
-            <div class="spinner-grow text-dark" style="width: 5rem; height: 5rem;" role="status">
-                <span class="sr-only">Loading...</span>
-            </div>
-        </div>
-        <div *ngIf="!isLoading">
-            <h3>{{viewModel.location}}</h3><br>
-            <h5>{{viewModel.value ? '$ ' + viewModel.value.toFixed(2) : ''}}</h5><br>
-            <div class="getting-started-info">
-                <p>More details to add here... More details to add here... More details to add here... More details to
-                    add
-                    here...
-                    More details to add here...
-                </p>
-            </div>
-        </div>
-    </div>
+
 </div>
-<div class="row align-items-center">
+<div class="row align-items-center" style="height: 5vh;">
+    <div class="col-md-10"></div>
     <div class="col-md-2">
-        <button kendoButton look="outline" *ngIf="view && view!='country'" (click)="view = 'country'"><span
+        <button kendoButton look="outline" *ngIf="view && view!='country'" (click)="viewChange('country')"><span
                 class="k-icon k-i-undo"> </span> </button>
         <button kendoButton look="outline" *ngIf="viewModel.location && view=='country'" (click)="navigate()">Go to
             County View</button>
         &nbsp;
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-10">
+        <h5>{{ viewModel.value ? description + ' for ' + viewModel.location + ':': ''}}</h5>
+        <h5>
+            {{viewModel.value ? '$ ' + viewModel.value.toFixed(2) : ''}}</h5>
     </div>
 </div>

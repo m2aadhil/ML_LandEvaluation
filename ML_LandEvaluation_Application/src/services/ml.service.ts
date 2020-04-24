@@ -10,7 +10,7 @@ export class MLService {
     private tensors: TensorData;
     private mlModel: LSTMModel;
 
-    executeTrainin = async (location: string, epochs: number, type: string) => {
+    executeTrainin = async (location: string, epochs: number, type: string, learningRate: number) => {
         this.tensors = new TensorData(location, type);
 
         await this.tensors.loadCSV(type);
@@ -19,7 +19,8 @@ export class MLService {
         let trainingData = this.tensors.getTrainingData();
         let validationData = this.tensors.getValidationData();
 
-        let learningRate = 4e-5;
+        //let learningRate = 6e-5;
+        //let learningRate = 0.00000001;
         this.mlModel = new LSTMModel();
         await this.mlModel.createModel(this.tensors.featureCount, learningRate);
         await this.mlModel.trainModel(trainingData, epochs);
@@ -56,10 +57,10 @@ export class MLService {
 
     trainAll = async () => {
         for (let i = 0; i < StateCodeMap.length; i++) {
-            await this.trainAndUpdate(StateCodeMap[i].code, 'state', 435);
+            await this.trainAndUpdate(StateCodeMap[i].code, 'state', 1900);
         }
         for (let i = 0; i < CountyCodeMapCA.length; i++) {
-            await this.trainAndUpdate(CountyCodeMapCA[i].code, 'county', 435);
+            await this.trainAndUpdate(CountyCodeMapCA[i].code, 'county', 1900);
         }
     }
 
@@ -67,11 +68,14 @@ export class MLService {
         let mlService: MLService = new MLService();
         let dbService: DBService = new DBService();
         try {
-            await mlService.executeTrainin(location, epochs, type);
-            let values: any[] = await mlService.getOrigianlPrices();
+            let learningRate = 6e-5;
+            await mlService.executeTrainin(location, epochs, type, learningRate);
+            let originalValues = await mlService.getOrigianlPrices();
+            let values: any[] = [originalValues[originalValues.length - 1]];
             let step1 = await mlService.predictStep(type);
             let step2 = await mlService.predictStep(type);
-            values.push(step1); values.push(step2);
+            let step3 = await mlService.predictStep(type);
+            values.push(step1); values.push(step2); values.push(step3);
             if (type == 'state') {
                 await dbService.addStateValues(location, values);
             } else {
