@@ -12,7 +12,7 @@ const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'view', component: ViewWindowComponent },
   { path: 'city', component: CityViewComponent },
-  { path: 'prediction', component: MachineLearningComponent },
+  { path: 'train', component: MachineLearningComponent },
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: '**', component: ErrorPageComponent }
 ];

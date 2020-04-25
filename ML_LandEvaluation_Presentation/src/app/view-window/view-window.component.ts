@@ -72,7 +72,7 @@ export class ViewWindowComponent implements OnInit {
       this.header = 'USA';
       this.description = 'Land Value Index';
     } else {
-      this.header = 'Califonia';
+      this.header = 'California';
       this.description = 'Value per purch';
     }
   }
@@ -80,8 +80,10 @@ export class ViewWindowComponent implements OnInit {
   navigate = async () => {
     if (this.viewModel.location == 'California') {
       //this.dataService.drillDrown.next(true);
+      this.isLoading = true;
       this.countyData = await this.dataService.getCountyData('California');
       this.viewChange('state');
+      this.isLoading = false;
     } else {
       this.statusMessage = "Sorry... Currently we have trained data only for California..."
 
