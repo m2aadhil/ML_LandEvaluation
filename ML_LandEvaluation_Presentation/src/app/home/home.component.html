@@ -6,8 +6,8 @@
     <p class="card-text">Look at market fluctuations as your friend rather than your enemy; profit from folly rather
       than participate in it</p>
     <div class="active-cyan-4 mb-4" style="padding-left: 36%; padding-right: 36%; padding-top: 2%;">
-      <input class="form-control" type="search" style="height: 60px; opacity: 0.9;"
-        placeholder="Enter an address, state or ZIP code" aria-label="Search">
+      <input class="form-control" type="search" [(ngModel)]="address" (keyup.enter)="getPlace()"
+        style="height: 60px; opacity: 0.9;" placeholder="Enter an address" aria-label="Search">
     </div>
 
   </div>

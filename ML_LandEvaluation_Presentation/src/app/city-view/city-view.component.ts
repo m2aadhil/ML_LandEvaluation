@@ -1,8 +1,9 @@
-import { Component, OnInit, ViewChild, Input, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, AfterViewInit, OnDestroy } from '@angular/core';
 import { } from 'googlemaps';
 import { CountyCodeMapCA } from '../constants/county-map-ca';
 import { HttpService } from '../services/https.service';
 import { environment } from 'src/environments/environment';
+import { ActivatedRoute } from '@angular/router';
 declare var jQuery: any;
 
 @Component({
@@ -11,9 +12,10 @@ declare var jQuery: any;
   styleUrls: ['./city-view.component.css']
 })
 
-export class CityViewComponent implements OnInit, AfterViewInit {
+export class CityViewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   //@Input() stateName: string;
+  isInit: boolean = true;
   address: string = "";
   isLoading: boolean = false;
   isLoadingCities: boolean = false;
@@ -34,9 +36,15 @@ export class CityViewComponent implements OnInit, AfterViewInit {
   @ViewChild('map', { static: true }) mapElement: any;
   map: google.maps.Map;
   marker: google.maps.Marker;
+  private sub: any;
+  private routeParams: any;
 
   ngOnInit() {
-
+    this.sub = this.route.params.subscribe(params => {
+      if (params) {
+        this.routeParams = params;
+      }
+    });
 
   }
 
@@ -50,12 +58,32 @@ export class CityViewComponent implements OnInit, AfterViewInit {
     this.init();
   }
 
-  constructor(private httpService: HttpService) { }
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
+  }
+
+  constructor(private httpService: HttpService, private route: ActivatedRoute) { }
 
   init = async () => {
     await this.getCities(this.county).then(() => {
-      this.cityChange({});
+      if (this.routeParams && this.routeParams['county']) {
+        this.navigatedByRoute();
+      } else {
+        this.cityChange({});
+      }
+    }).catch(() => {
+      this.isInit = false;
     })
+  }
+
+  navigatedByRoute = () => {
+    this.isLoading = true;
+    let county = this.routeParams['county'];
+    let city = this.routeParams['city'];
+    this.address = decodeURI(this.routeParams['address']);
+    this.county = CountyCodeMapCA.find(i => i.name.trim() == (decodeURI(county)).trim()).code;
+    this.location = this.listCities.find(i => i.CityName.trim() == (decodeURI(city)).trim()).CityCode;
+    this.onClickSubmit();
   }
 
   onClickMap = ($event) => {
@@ -66,7 +94,7 @@ export class CityViewComponent implements OnInit, AfterViewInit {
     this.marker = new google.maps.Marker({
       position: $event.latLng,
       map: this.map,
-      title: 'Hello World!'
+      title: 'Location'
     });
     this.getAddress($event.latLng);
   }
@@ -90,7 +118,7 @@ export class CityViewComponent implements OnInit, AfterViewInit {
   }
   cityChange($event): void {
     this.setMarker = false;
-    let address = this.listCities.find(i => i.CityCode == this.location).CityName;
+    let address = this.listCities.find(i => i.CityCode == this.location).CityName + ', CA, USA';
     this.zoomLevel = 15;
     let geocoder = new google.maps.Geocoder();
     geocoder.geocode({
@@ -139,13 +167,14 @@ export class CityViewComponent implements OnInit, AfterViewInit {
         this.marker = new google.maps.Marker({
           position: results[0].geometry.location,
           map: this.map,
-          title: 'Hello World!'
+          title: 'Location'
         });
         this.getAddress(results[0].geometry.location);
       }
     } else {
       alert("Something got wrong " + status);
     }
+    this.isInit = false;
   }
 
   getCities = async (countyCode: string) => {
@@ -167,10 +196,11 @@ export class CityViewComponent implements OnInit, AfterViewInit {
     await this.httpService.get(url).then((res: any) => {
       if (res) {
         console.log(res);
+        this.isLoading = false;
         this.estimatedValue = Number(res.price).toFixed(4);
       }
-      this.isLoading = false;
-    })
+    });
+    this.isLoading = false;
   }
 
 }

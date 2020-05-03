@@ -10,8 +10,9 @@ import { ViewWindowComponent } from './view-window/view-window.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
-  { path: 'view', component: ViewWindowComponent },
-  { path: 'city', component: CityViewComponent },
+  { path: 'heatmap', component: ViewWindowComponent },
+  { path: 'mapview', component: CityViewComponent },
+  { path: 'mapview/:state/:county/:city/:address', component: CityViewComponent },
   { path: 'train', component: MachineLearningComponent },
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: '**', component: ErrorPageComponent }

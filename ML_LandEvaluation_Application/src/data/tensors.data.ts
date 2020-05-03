@@ -2,9 +2,9 @@ import * as tf from '@tensorflow/tfjs';
 
 import { StateMinMax } from './models/state.min-max.model';
 import { CountyMinMax } from './models/county.min-max.model';
+//file://C://Users/MusthaqAa/source/repos/ML_LandEvaluation/ML_LandEvaluation_Application/datasets/
+const DATA_PATH = "file://./././datasets/";
 
-//const DATA_PATH = "file://C://Users/MusthaqAa/source/repos/ML_LandEvaluation/ML_LandEvaluation_Application/datasets/arizona_data.csv";
-const DATA_PATH = "file://C://Users/MusthaqAa/source/repos/ML_LandEvaluation/ML_LandEvaluation_Application/datasets/";
 
 
 /**
@@ -139,14 +139,14 @@ export class TensorData {
     }
 
 
-     /**
-     * de-normailze a normalized value into original
-     * 
-     * @param {number} value (normalized value) 
-     * @param {number} min (minimum value) 
-     * @param {number} max (maximum value) 
-     * @memberof TensorData
-     */
+    /**
+    * de-normailze a normalized value into original
+    * 
+    * @param {number} value (normalized value) 
+    * @param {number} min (minimum value) 
+    * @param {number} max (maximum value) 
+    * @memberof TensorData
+    */
     deNormalizeValue = (value, min, max) => {
         return value * (max - min) + min;
     }

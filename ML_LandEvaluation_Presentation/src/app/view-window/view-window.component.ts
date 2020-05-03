@@ -16,6 +16,7 @@ export class ViewWindowComponent implements OnInit {
   description = 'Land Value Index';
   public value: number = 2008;
   isLoading: boolean = false;
+  isInit: boolean = true;
   statusMessage: string = "";
   view: string;
   stateData: StateResponseDTO[] = [];
@@ -42,8 +43,9 @@ export class ViewWindowComponent implements OnInit {
     this.statusMessage = 'Please wait while the map loads...';
     this.stateData = await this.dataService.getStateData();
     this.view = 'country';
-    this.isLoading = false;
     this.statusMessage = "";
+    this.isInit = false;
+    this.isLoading = false;
     this.sliderAnimation();
   }
 

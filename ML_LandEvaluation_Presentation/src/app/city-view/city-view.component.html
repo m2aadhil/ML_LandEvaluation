@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid" [hidden]="isInit">
   <div class="row" style="padding-top: 2vh;"></div>
   <div class="row">
     <div class="col-md-6">
@@ -91,4 +91,25 @@
 
   </div>
 
+</div>
+<div class="container-fluid" [hidden]="!isInit">
+  <div class="row" style="padding-top: 2vh;"></div>
+  <div style="height: 60vh;" class="row align-items-center">
+    <div class="col-md-12">
+      <div class="loader">
+        <div class="loader-inner">
+          <div class="loading one"></div>
+        </div>
+        <div class="loader-inner">
+          <div class="loading two"></div>
+        </div>
+        <div class="loader-inner">
+          <div class="loading three"></div>
+        </div>
+        <div class="loader-inner">
+          <div class="loading four"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

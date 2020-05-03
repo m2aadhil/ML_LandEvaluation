@@ -18,8 +18,7 @@ app.use(function (req, res, next) {
 });
 
 //configs
-require('custom-env').env('dev')
-app.set("port", process.env.PORT);
+app.set("port", Number(process.env.PORT) || 3600);
 
 //application routes
 app.get('/', (req, res) => {

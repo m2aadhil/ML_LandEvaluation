@@ -4,7 +4,12 @@
 
 export const environment = {
   production: false,
-  coreServiceUrl: "http://localhost:3600/"
+  coreServiceUrl: "http://localhost:3600/",//"https://landevaluation-275112.el.r.appspot.com/",
+  googleMaps: {
+    geoCodeAPI: "https://maps.googleapis.com/maps/api/geocode/json?",
+    apiKey: "AIzaSyDyR_6J7H-k-A_SF2sNQ0Brou2IZQYpeik"
+
+  }
 };
 
 /*

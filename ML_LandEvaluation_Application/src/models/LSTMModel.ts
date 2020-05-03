@@ -1,5 +1,4 @@
 import * as tf from '@tensorflow/tfjs';
-import { callbacks } from '@tensorflow/tfjs';
 import { TensorData } from '../data/tensors.data';
 import { io } from '../server';
 

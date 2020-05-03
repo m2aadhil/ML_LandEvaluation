@@ -19,9 +19,9 @@ const documents = {};
 io.on('connection', (socket) => {
     console.log('a user connected');
     socket.on('disconnect', () => { console.log('user disconnected'); });
-    socket.on('my message', (msg) => {
-        console.log('message: ' + msg);
-    });
+    // socket.on('my message', (msg) => {
+    //     console.log('message: ' + msg);
+    // });
 
 });
 export default server;
