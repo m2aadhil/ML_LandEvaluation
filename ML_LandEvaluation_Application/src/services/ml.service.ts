@@ -1,8 +1,8 @@
 import { TensorData } from "../data/tensors.data";
 import { LSTMModel } from "../models/LSTMModel";
 import { DBService } from "./database.service";
-import { StateCodeMap } from "./statemap";
-import { CountyCodeMapCA } from "./county-map-ca";
+import { StateCodeMap } from "../data/models/statemap";
+import { CountyCodeMapCA } from "../data/models/county-map-ca";
 
 export class MLService {
 

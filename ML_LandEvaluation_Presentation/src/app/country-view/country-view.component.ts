@@ -15,6 +15,7 @@ declare var jvm: any;
 })
 export class CountryViewComponent implements OnInit, AfterViewInit, OnDestroy {
   public value: number;
+  @Input() year: number = 2008;
   @Input() data: StateResponseDTO[] = [];
   @Output() public viewChange: EventEmitter<any> = new EventEmitter<any>();
   item: StateResponseDTO;
@@ -32,8 +33,7 @@ export class CountryViewComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.item = this.data[0];
-    //this.setColorRange();
+    this.item = this.data[this.year - 2008];
   }
 
   ngOnDestroy(): void {
@@ -41,7 +41,6 @@ export class CountryViewComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    //'/js/us-counties/jquery-jvectormap-data-'
     let minMax = this.getMinMax();
     console.log(minMax);
     jQuery(
@@ -82,6 +81,7 @@ export class CountryViewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   }
 
+  //year change
   sliderChange(e): void {
     console.log(e);
     this.item = this.data.find(x => x.Year == e.toString());
@@ -91,6 +91,7 @@ export class CountryViewComponent implements OnInit, AfterViewInit, OnDestroy {
     this.dataService.viewModel.next(view);
   }
 
+  //map zoom
   drillDown(e): void {
     if (e) {
       let mapData = this.map.params.mapNameByCode('us_lcc', this.map);
@@ -98,27 +99,25 @@ export class CountryViewComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  //region selection 
   onRegionSelected = (e, code, isSelected, selectedRegions) => {
     let view: ViewModel = new ViewModel();
     this.code = code.replace('-', '_');
     view.location = StateCodeMap.find(i => i.code == this.code).name;
     view.value = this.item[this.code];
     this.dataService.viewModel.next(view);
-    // if (this.code != 'US_CA') {
-
-    // }
     e.stopImmediatePropagation();
 
   }
 
+  //tool tip
   private onRegionTipShow = (e, el, code) => {
     let index = code.replace("-", "_");
     let value = this.item[index] ? (Number(this.item[index])).toFixed(2) : null;
     el.html(el.html() + ' ($ ' + value + ')');
   }
 
-  private valueRange: number[] = [];
-
+  //minimum and maximum values
   getMinMax() {
     let max: number = 0;
     let min: number = 0;
@@ -139,46 +138,6 @@ export class CountryViewComponent implements OnInit, AfterViewInit, OnDestroy {
     return { min: min, max: max };
   }
 
-  // setColorRange(): void {
-  //   let max: number = 0;
-  //   let min: number = 0;
-  //   this.valueRange = [];
-  //   this.data.forEach(item => {
-  //     for (let key of Object.keys(item)) {
-  //       let val = item[key];
-  //       if (key == 'Year' || isNaN(val)) {
-  //         continue;
-  //       }
-  //       if (val > max) {
-  //         max = val;
-  //       }
-  //       if (val < min || min == 0) {
-  //         min = val;
-  //       }
-  //     }
-  //   })
-  //   console.log(max)
-  //   console.log(min)
-  //   let range: number = (max - min) / 100;
-  //   let value: number = min;
-  //   for (let i = 0; i <= 100; i++) {
-  //     this.valueRange.push(value);
-  //     value += range;
-  //   }
-  //   console.log(range)
-  //   console.log(this.valueRange)
-  // }
-
-  // getIndexOfValue(value: number): number {
-  //   console.log(value);
-  //   for (let i = 0; i < this.valueRange.length; i++) {
-  //     if (this.valueRange[i] > value) {
-  //       return i;
-  //     }
-  //   }
-  //   return -1;
-  // }
-
   getValues = (data: StateResponseDTO) => {
     let mapData = {};
     for (let key of Object.keys(data)) {
@@ -188,17 +147,4 @@ export class CountryViewComponent implements OnInit, AfterViewInit, OnDestroy {
     return mapData;
   }
 
-  // generateColors = (map) => {
-  //   var colors = {},
-  //     key;
-
-  //   let i = 0;
-  //   for (key in map.regions) {
-  //     let index = key.replace("-", "_");
-  //     i = 210 - (this.getIndexOfValue(this.item[index]) * 2);
-  //     colors[key] = i <= 210 ? '#' + convert.rgb.hex(255, i, 0) : '#FFFFFF';
-  //   }
-  //   console.log(colors);
-  //   return colors;
-  // }
 }

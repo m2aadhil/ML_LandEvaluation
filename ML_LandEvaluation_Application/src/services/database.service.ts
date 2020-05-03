@@ -1,22 +1,10 @@
 import { DBManager } from "../database/database.manager";
 import { StateValues } from "../database/models/db.statevalues";
 import { CountyValues } from "../database/models/dn.countyvalues";
-import { CountyCodeMapCA } from "./county-map-ca";
+import { CountyCodeMapCA } from "../data/models/county-map-ca";
 const csv = require('csvtojson');
 
 export class DBService {
-
-
-    testCSVCOnverter = () => {
-        // Invoking csv returns a promise
-        let converter = csv()
-            .fromFile('./other/citycodes.csv')
-            .then((json) => {
-                //console.log(json);
-                this.addDatatoDB(json);
-
-            })
-    }
 
     addDatatoDB = async (file) => {
         let dbManager: DBManager = new DBManager();
@@ -112,7 +100,6 @@ export class DBService {
         let dbManager: DBManager = new DBManager();
         await dbManager.connect('land_evaluation');
         return await dbManager.getDocuments('db.citycodes', { CityName: { $not: { $eq: '' } } })
-        //return await dbManager.getAllDocuments('db.citycodes');
     }
 
 }

@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 //controllers
 import * as ModelController from "./controllers/model.controller";
 import * as DatabaseController from "./controllers/database.controller";
+import { AppConfig } from './config';
 
 const app = express();
 
@@ -18,7 +19,7 @@ app.use(function (req, res, next) {
 });
 
 //configs
-app.set("port", Number(process.env.PORT) || 3600);
+app.set("port", Number(process.env.PORT) || AppConfig.port);
 
 //application routes
 app.get('/', (req, res) => {
@@ -26,12 +27,11 @@ app.get('/', (req, res) => {
 });
 app.get("/home", ModelController.getInit);
 app.get("/train/:type/:location/:epochs/:learningr", ModelController.train);
-app.get("/testdb", DatabaseController.testDBConnection);
 app.get("/getstatevalues", DatabaseController.getAllStateValues);
 app.get("/getcountyvalues/:state", DatabaseController.getAllCountyValues);
 app.get("/getpriceforloc/:address/:lat/:lng/:year/:citycode", ModelController.getPriceforLocation);
 app.get("/getcities/:county", ModelController.getCities);
 
-//HomeController.trainAll();
+//ModelController.trainAll();
 
 export default app;

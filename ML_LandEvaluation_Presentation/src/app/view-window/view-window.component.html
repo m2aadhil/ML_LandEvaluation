@@ -17,9 +17,11 @@
                     </div>
                 </div>
                 <div *ngIf="!isLoading">
-                    <app-country-view *ngIf="view =='country'" [data]="stateData" (viewChange)="viewChange($event)">
+                    <app-country-view *ngIf="view =='country'" [year]="value" [data]="stateData"
+                        (viewChange)="viewChange($event)">
                     </app-country-view>
-                    <app-state-view *ngIf="view == 'state'" [data]="countyData" (viewChange)="viewChange($event)">
+                    <app-state-view *ngIf="view == 'state'" [year]="value" [data]="countyData"
+                        (viewChange)="viewChange($event)">
                     </app-state-view>
                 </div>
             </div>

@@ -65,8 +65,10 @@ export class CityViewComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(private httpService: HttpService, private route: ActivatedRoute) { }
 
   init = async () => {
+    //load cities drop down
     await this.getCities(this.county).then(() => {
       if (this.routeParams && this.routeParams['county']) {
+        //if navigation is coming from home page enter click
         this.navigatedByRoute();
       } else {
         this.cityChange({});

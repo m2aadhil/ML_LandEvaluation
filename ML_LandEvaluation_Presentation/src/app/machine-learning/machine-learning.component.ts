@@ -24,10 +24,8 @@ export class MachineLearningComponent implements OnInit {
     isLoading: boolean = false;
     isState: boolean = true;
 
-
-    //ng-chart
     single: any[];
-    //multi: any[];
+
     epochGraph = [
         {
             'name': 'Validation Loss',
@@ -95,7 +93,6 @@ export class MachineLearningComponent implements OnInit {
     ngOnInit() {
         let onComplete: Subject<number> = new Subject<number>();
         this.epcochI = 1;
-        //this.initData();
         onComplete.subscribe(r => {
             this.epochGraph[0].series.push({
                 'name': this.epcochI++,

@@ -102,7 +102,7 @@ export class LSTMModel {
         }
     }
 
-
+    //Predict next step from last step -- County Data
     predictNextStepCounty = async (tensor: TensorData) => {
         let price = null;
         this.columnLength = this.populations.length;
@@ -137,6 +137,7 @@ export class LSTMModel {
         return price;
     }
 
+    //Predict next step from last step - State Data
     predictNextStepState = async (tensor: TensorData) => {
         let price = null;
         this.columnLength = this.populations.length;
@@ -186,6 +187,7 @@ export class LSTMModel {
         return val;
     }
 
+    //Calculate STD Deviation
     calculateMeansNStddevs = async (dataColumns) => {
         let means;
         let stddevs;
@@ -197,15 +199,6 @@ export class LSTMModel {
             console.log('means:', means);
             console.log('stddevs:', stddevs);
         });
-
-        // this.normalizedData = [];
-        // for (let i = 0; i < this.numRows; ++i) {
-        //     const row = [];
-        //     for (let j = 0; j < this.numCols; ++j) {
-        //         row.push((this.data[i][j] - this.means[j]) / this.stddevs[j]);
-        //     }
-        //     this.normalizedData.push(row);
-        // }
 
         return { mean: means, stdDev: stddevs }
     }

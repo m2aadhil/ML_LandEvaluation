@@ -7,7 +7,6 @@ import { environment } from 'src/environments/environment';
 export class SocketIOService {
 
     socket;
-    private socketEndPoint: string = 'http://localhost:3600';
 
     constructor() { }
     setupSocketConnection(onComplete: Subject<number>) {
@@ -15,7 +14,7 @@ export class SocketIOService {
             transports: ['websocket'],
             secure: true
         });
-        //this.socket.emit('my message', 'Hello there from Angular.');
+        //this.socket.emit('my message', 'Hello there from Minecraft.');
         this.socket.on('my broadcast', (data) => {
             console.log(data.server.loss);
             onComplete.next(data.server.loss);

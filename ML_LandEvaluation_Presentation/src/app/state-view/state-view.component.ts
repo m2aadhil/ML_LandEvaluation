@@ -14,7 +14,7 @@ declare var jvm: any;
   styleUrls: ['./state-view.component.css']
 })
 export class StateViewComponent implements OnInit, AfterViewInit, OnDestroy {
-
+  @Input() year: number = 2008;
   @Input() data: CountyResponseDTO[] = [];
   @Output() public viewChange: EventEmitter<any> = new EventEmitter<any>();
   item: CountyResponseDTO;
@@ -32,8 +32,7 @@ export class StateViewComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.item = this.data[0];
-    // this.setColorRange();
+    this.item = this.data[this.year - 2008];
   }
 
   ngOnDestroy(): void {
@@ -74,6 +73,7 @@ export class StateViewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   }
 
+  //year slider change
   sliderChange(e): void {
     console.log(e);
     this.item = this.data.find(x => x.Year == e.toString());
@@ -83,6 +83,7 @@ export class StateViewComponent implements OnInit, AfterViewInit, OnDestroy {
     this.dataService.viewModel.next(view);
   }
 
+  //map zoom
   drillDown(e): void {
     if (e) {
       let mapData = this.map.params.mapNameByCode('us_ca_lcc_en', this.map);
@@ -90,6 +91,7 @@ export class StateViewComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  //region selection
   onRegionSelected = (e, code, isSelected, selectedRegions) => {
     let view: ViewModel = new ViewModel();
     this.code = code.replace('0', '');
@@ -102,6 +104,7 @@ export class StateViewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   }
 
+  //load values on map
   getValues = (data: CountyResponseDTO) => {
     let mapData = {};
     for (let key of Object.keys(data)) {
@@ -113,12 +116,14 @@ export class StateViewComponent implements OnInit, AfterViewInit, OnDestroy {
     return mapData;
   }
 
+  //tool tip
   private onRegionTipShow = (e, el, code) => {
     let index = code.replace("0", "");
     let value = this.item[index] ? (Number(this.item[index])).toFixed(2) : null;
     el.html(el.html() + ' ($ ' + value + ')');
   }
 
+  //minimum and maximum values
   getMinMax() {
     let max: number = 0;
     let min: number = 0;
@@ -138,58 +143,5 @@ export class StateViewComponent implements OnInit, AfterViewInit, OnDestroy {
     })
     return { min: min, max: max };
   }
-
-
-  // private valueRange: number[] = [];
-  // setColorRange(): void {
-  //   let max: number = 0;
-  //   let min: number = 0;
-  //   this.valueRange = [];
-  //   this.data.forEach(item => {
-  //     for (let key of Object.keys(item)) {
-  //       let val = item[key];
-  //       if (key == 'Year' || isNaN(val)) {
-  //         continue;
-  //       }
-  //       if (val > max) {
-  //         max = val;
-  //       }
-  //       if (val < min || min == 0) {
-  //         min = val;
-  //       }
-  //     }
-  //   })
-
-  //   let range: number = (max - min) / 100;
-  //   let value: number = min;
-  //   for (let i = 0; i <= 100; i++) {
-  //     this.valueRange.push(value);
-  //     value += range;
-  //   }
-  //   console.log(this.valueRange);
-  // }
-
-  // getIndexOfValue(value: number): number {
-  //   for (let i = 0; i < this.valueRange.length; i++) {
-  //     if (this.valueRange[i] > value) {
-  //       return i;
-  //     }
-  //   }
-  //   return -1;
-  // }
-
-  // generateColors = (map) => {
-  //   var colors = {},
-  //     key;
-
-  //   let i = 0;
-  //   for (key in map.regions) {
-  //     let index = key.replace("0", "");
-  //     i = 210 - (this.getIndexOfValue(this.item[index]) * 2);
-  //     colors[key] = i <= 210 ? '#' + convert.rgb.hex(255, i, 0) : '#FFFFFF';
-  //   }
-  //   console.log(colors);
-  //   return colors;
-  // }
 
 }

@@ -7,6 +7,7 @@ export const getInit = (req: Request, res: Response) => {
     res.json({ res: true });
 }
 
+//Trigger Training
 export const train = async (req: Request, res: Response) => {
     console.log(req.params);
     let mlService: MLService = new MLService();
@@ -26,17 +27,20 @@ export const train = async (req: Request, res: Response) => {
     res.json({ original: values, prediction: predictions });
 }
 
+//Trigger Training on Server Start
 export const trainAll = () => {
     let mlService: MLService = new MLService();
     mlService.trainAll();
 }
 
+//Predict Price for Google Map Location
 export const getPriceforLocation = async (req: Request, res: Response) => {
     let cityService: CityService = new CityService();
     let response = await cityService.getPriceLocation(req.params.address, req.params.lat, req.params.lng, req.params.year, req.params.citycode);
     res.json({ price: response });
 }
 
+//Get City List for Dropdown
 export const getCities = async (req: Request, res: Response) => {
     let cityService: CityService = new CityService();
     let response = await cityService.getCitiesofCounty(req.params.county)

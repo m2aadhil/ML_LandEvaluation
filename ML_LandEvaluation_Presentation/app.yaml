@@ -1,0 +1,9 @@
+runtime: python27
+api_version: 1
+threadsafe: true
+handlers:
+- url: /
+  static_files: LandEvaluationWeb/index.html
+  upload: LandEvaluationWeb/index.html
+- url: /
+  static_dir: LandEvaluationWeb

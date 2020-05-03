@@ -1,12 +1,13 @@
 import { DBManager } from "../database/database.manager";
 import { APIService } from "./api.service";
-import { CountyCodeMapCA } from "./county-map-ca";
+import { CountyCodeMapCA } from "../data/models/county-map-ca";
 
 export class CityService {
 
     private transist: number = 3 / 6;
     private walkability: number = 2 / 6;
     private bikablity: number = 1 / 6;
+
 
     getCitiesofCounty = async (county: string) => {
         let result = null;
@@ -30,6 +31,7 @@ export class CityService {
         return result;
     }
 
+    //Get price for google map location
     getPriceLocation = async (address: string, laty: string, longt: string, year: string, cityCode: string) => {
         let apiService: APIService = new APIService();
         let apiResponse = await apiService.executeWalkScoreRequest(address, laty, longt);
