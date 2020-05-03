@@ -1,10 +1,7 @@
 import * as tf from '@tensorflow/tfjs';
-
 import { StateMinMax } from './models/state.min-max.model';
 import { CountyMinMax } from './models/county.min-max.model';
-//file://C://Users/MusthaqAa/source/repos/ML_LandEvaluation/ML_LandEvaluation_Application/datasets/
-const DATA_PATH = "file://./././datasets/";
-
+import { AppConfig } from '../config';
 
 
 /**
@@ -25,7 +22,7 @@ export class TensorData {
     countyMinMax: CountyMinMax = new CountyMinMax();
 
     constructor(location: string, type: string) {
-        this.filePath = DATA_PATH + type + '/' + location + '.csv';
+        this.filePath = AppConfig.DATA_PATH + type + '/' + location + '.csv';
     }
 
 
