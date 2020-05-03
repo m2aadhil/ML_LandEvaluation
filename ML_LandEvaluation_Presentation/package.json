@@ -28,6 +28,7 @@
     "@progress/kendo-angular-inputs": "^6.5.0",
     "@progress/kendo-angular-intl": "^2.0.0",
     "@progress/kendo-angular-l10n": "^2.0.0",
+    "@progress/kendo-angular-notification": "^2.1.0",
     "@progress/kendo-angular-popup": "^3.0.0",
     "@progress/kendo-drawing": "^1.1.2",
     "@progress/kendo-theme-default": "^4.17.0",

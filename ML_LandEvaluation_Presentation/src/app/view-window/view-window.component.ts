@@ -5,6 +5,7 @@ import { StateResponseDTO } from '../model/states.response.dto';
 import { DataMapService } from '../services/data.map.service';
 import { ViewModel } from '../model/view.model';
 import { CountyResponseDTO } from '../model/county.response.dto';
+import { NotificationService } from '@progress/kendo-angular-notification';
 
 @Component({
   selector: 'app-view-window',
@@ -22,7 +23,7 @@ export class ViewWindowComponent implements OnInit {
   stateData: StateResponseDTO[] = [];
   countyData: CountyResponseDTO[] = [];
   viewModel: ViewModel = new ViewModel();
-  constructor(private dataService: DataMapService) {
+  constructor(private dataService: DataMapService, private notificationService: NotificationService) {
     this.dataService.viewModel.subscribe((e: ViewModel) => {
       if (e.location) {
         this.viewModel.location = e.location;
@@ -80,14 +81,22 @@ export class ViewWindowComponent implements OnInit {
   }
 
   navigate = async () => {
-    if (this.viewModel.location == 'California') {
+    console.log(this.viewModel.location);
+    if (this.viewModel.location.trim() == 'California') {
       //this.dataService.drillDrown.next(true);
       this.isLoading = true;
       this.countyData = await this.dataService.getCountyData('California');
       this.viewChange('state');
       this.isLoading = false;
     } else {
-      this.statusMessage = "Sorry... Currently we have trained data only for California..."
+      this.notificationService.show({
+        content: 'Sorry! Currently we have trained data only for California',
+        cssClass: 'button-notification',
+        animation: { type: 'slide', duration: 200 },
+        position: { horizontal: 'center', vertical: 'bottom' },
+        type: { style: 'success', icon: false }
+      });
+      //this.statusMessage = "Sorry! Currently we have trained data only for California"
 
     }
     this.viewModel = new ViewModel();

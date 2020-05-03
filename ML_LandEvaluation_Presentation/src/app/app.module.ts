@@ -16,14 +16,14 @@ import { FormsModule } from '@angular/forms';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { ChartsModule } from '@progress/kendo-angular-charts';
 import 'hammerjs';
-import { FooterComponent } from './footer/footer.component';
 import { HomeComponent } from './home/home.component';
-import { SharedComponent } from './shared/shared.component';
 import { ErrorPageComponent } from './error-page/error-page.component';
 import { ViewWindowComponent } from './view-window/view-window.component';
 import { DataMapService } from './services/data.map.service';
 import { SocketIOService } from './services/socketio.service';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { NotificationModule } from '@progress/kendo-angular-notification';
+
 
 @NgModule({
   declarations: [
@@ -32,9 +32,7 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
     StateViewComponent,
     CityViewComponent,
     MachineLearningComponent,
-    FooterComponent,
     HomeComponent,
-    SharedComponent,
     ErrorPageComponent,
     ViewWindowComponent
   ],
@@ -51,6 +49,7 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyDyR_6J7H-k-A_SF2sNQ0Brou2IZQYpeik'
     }),
+    NotificationModule,
   ],
   providers: [HttpService, DataMapService, SocketIOService],
   bootstrap: [AppComponent]

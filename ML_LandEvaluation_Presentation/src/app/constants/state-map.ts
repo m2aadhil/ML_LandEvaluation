@@ -34,7 +34,6 @@ export const StateCodeMap: ObjectModel[] = [
     { code: 'US_UT', name: 'Utah' },
     { code: 'US_IN', name: 'Indiana' },
     { code: 'US_IL', name: 'Illinois' },
-    { code: 'US_AK', name: 'Alaska' },
     { code: 'US_NJ', name: 'New Jersey' },
     { code: 'US_CO', name: 'Colorado' },
     { code: 'US_MD', name: 'Maryland' },

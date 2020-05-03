@@ -18,7 +18,7 @@ export class CityViewComponent implements OnInit, AfterViewInit, OnDestroy {
   isInit: boolean = true;
   address: string = "";
   isLoading: boolean = false;
-  isLoadingCities: boolean = false;
+  isLoadingCities: boolean = true;
   listYears = ["2019", "2020", "2021"];
   listStates = ["California"];
   state = "California";
@@ -77,12 +77,14 @@ export class CityViewComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   navigatedByRoute = () => {
+    this.isInit = false;
     this.isLoading = true;
     let county = this.routeParams['county'];
     let city = this.routeParams['city'];
     this.address = decodeURI(this.routeParams['address']);
     this.county = CountyCodeMapCA.find(i => i.name.trim() == (decodeURI(county)).trim()).code;
     this.location = this.listCities.find(i => i.CityName.trim() == (decodeURI(city)).trim()).CityCode;
+
     this.onClickSubmit();
   }
 
@@ -187,6 +189,7 @@ export class CityViewComponent implements OnInit, AfterViewInit, OnDestroy {
         this.listCities = res.sort((x, y) => x.CityName > y.CityName ? 1 : -1);;
       }
     })
+    this.isLoadingCities = false;
   }
 
   getPredictedPrice = async (address: string, lat: string, lng: string) => {

@@ -13,7 +13,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
 //controllers
-const HomeController = __importStar(require("./controllers/home.controller"));
+const ModelController = __importStar(require("./controllers/model.controller"));
 const DatabaseController = __importStar(require("./controllers/database.controller"));
 const app = express_1.default();
 app.use(body_parser_1.default.json());
@@ -29,14 +29,13 @@ app.set("port", Number(process.env.PORT) || 3600);
 app.get('/', (req, res) => {
     res.send('app works..!');
 });
-app.get("/home", HomeController.getInit);
-app.get("/train/:type/:location/:epochs/:learningr", HomeController.train);
+app.get("/home", ModelController.getInit);
+app.get("/train/:type/:location/:epochs/:learningr", ModelController.train);
 app.get("/testdb", DatabaseController.testDBConnection);
 app.get("/getstatevalues", DatabaseController.getAllStateValues);
 app.get("/getcountyvalues/:state", DatabaseController.getAllCountyValues);
-app.get("/getpriceforloc/:address/:lat/:lng/:year/:citycode", HomeController.getPriceforLocation);
-app.get("/getcities/:county", HomeController.getCities);
+app.get("/getpriceforloc/:address/:lat/:lng/:year/:citycode", ModelController.getPriceforLocation);
+app.get("/getcities/:county", ModelController.getCities);
 //HomeController.trainAll();
-//DatabaseController.testCSV();
 exports.default = app;
 //# sourceMappingURL=app.js.map
