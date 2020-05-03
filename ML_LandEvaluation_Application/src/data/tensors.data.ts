@@ -22,7 +22,7 @@ export class TensorData {
     countyMinMax: CountyMinMax = new CountyMinMax();
 
     constructor(location: string, type: string) {
-        this.filePath = AppConfig.DATA_PATH + type + '/' + location + '.csv';
+        this.filePath = 'file://./././datasets/' + type + '/' + location + '.csv';
     }
 
 

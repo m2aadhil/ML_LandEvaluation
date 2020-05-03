@@ -31,11 +31,10 @@ app.get('/', (req, res) => {
 });
 app.get("/home", ModelController.getInit);
 app.get("/train/:type/:location/:epochs/:learningr", ModelController.train);
-app.get("/testdb", DatabaseController.testDBConnection);
 app.get("/getstatevalues", DatabaseController.getAllStateValues);
 app.get("/getcountyvalues/:state", DatabaseController.getAllCountyValues);
 app.get("/getpriceforloc/:address/:lat/:lng/:year/:citycode", ModelController.getPriceforLocation);
 app.get("/getcities/:county", ModelController.getCities);
-//HomeController.trainAll();
+//ModelController.trainAll();
 exports.default = app;
 //# sourceMappingURL=app.js.map

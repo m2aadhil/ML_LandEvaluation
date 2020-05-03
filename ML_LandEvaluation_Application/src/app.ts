@@ -19,7 +19,7 @@ app.use(function (req, res, next) {
 });
 
 //configs
-app.set("port", Number(process.env.PORT) || AppConfig.port);
+app.set("port", Number(process.env.PORT) || 3600);
 
 //application routes
 app.get('/', (req, res) => {

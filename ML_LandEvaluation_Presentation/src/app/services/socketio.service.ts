@@ -9,6 +9,7 @@ export class SocketIOService {
     socket;
 
     constructor() { }
+    
     setupSocketConnection(onComplete: Subject<number>) {
         this.socket = io(environment.coreServiceUrl, {
             transports: ['websocket'],

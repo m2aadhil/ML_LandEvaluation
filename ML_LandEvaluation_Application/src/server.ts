@@ -7,7 +7,7 @@ export const io = require('socket.io')(http);
  */
 const server = http.listen(app.get("port"), () => {
     console.log(
-        "  App is running at http://:%d in %s mode",
+        "  App is running at port //:%d in %s mode",
         app.get("port"),
         app.get("env")
     );
